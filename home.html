@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerraScope - Explore The Galaxy</title>
+    <link rel="stylesheet" href="css/home.css">
+   
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
+            <a href="#">DESTINATIONS</a>
+            <a href="#">BOOKINGS</a>
+        </div>
+        <div class="logo">SPACE9</div>
+        <div class="nav-links">
+            <a href="#">TECHNOLOGY</a>
+            <a href="#">MY TRIPS</a>
+        </div>
+        <div class="temp">-50° ❄️</div>
+    </nav>
+
+    <div class="side-nav">
+        <a href="#" class="side-link">MARS CONDITIONS</a>
+        <a href="#" class="side-link">SAFETY</a>
+        <a href="#" class="side-link">ABOUT US</a>
+    </div>
+
+    <div class="hero">
+        <canvas id="canvas"></canvas>
+        
+        <div class="hero-content">
+            <div class="subtitle">THE SAFEST WAY TO</div>
+            <h1>EXPLORE THE GALAXY</h1>
+            
+            <div class="search-container">
+                <div class="search-field">
+                    <label class="search-label">LAUNCH PAD</label>
+                    <select class="search-input">
+                        <option>SEA</option>
+                        <option>LA</option>
+                        <option>NYC</option>
+                        <option>TOKYO</option>
+                    </select>
+                </div>
+                
+                <div class="search-field">
+                    <label class="search-label">DESTINATION</label>
+                    <select class="search-input">
+                        <option>MOON</option>
+                        <option>MARS</option>
+                        <option>EUROPA</option>
+                        <option>TITAN</option>
+                    </select>
+                </div>
+                
+                <div class="search-field">
+                    <label class="search-label">DATES</label>
+                    <input type="text" class="search-input" value="7.20 - 7.25" readonly>
+                </div>
+                
+                <div class="search-field">
+                    <label class="search-label">PASSENGERS</label>
+                    <select class="search-input">
+                        <option>1 ADULT</option>
+                        <option>2 ADULTS</option>
+                        <option>3 ADULTS</option>
+                        <option>4 ADULTS</option>
+                    </select>
+                </div>
+                
+                <button class="search-btn">SEARCH</button>
+            </div>
+        </div>
+
+        <div class="featured">
+            <div class="featured-label">FEATURED</div>
+            <div class="featured-title">ADVENTURES</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const planets = [];
+        const stars = [];
+
+        // Create stars
+        for (let i = 0; i < 200; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2,
+                speed: Math.random() * 0.5
+            });
+        }
+
+        // Solar system data
+        const solarSystem = [
+            { name: 'Sun', size: 60, distance: 0, color: '#FDB813', speed: 0 },
+            { name: 'Mercury', size: 8, distance: 100, color: '#8C7853', speed: 0.02 },
+            { name: 'Venus', size: 14, distance: 150, color: '#FFC649', speed: 0.015 },
+            { name: 'Earth', size: 15, distance: 200, color: '#4A90E2', speed: 0.01 },
+            { name: 'Mars', size: 12, distance: 260, color: '#E27B58', speed: 0.008 },
+            { name: 'Jupiter', size: 35, distance: 350, color: '#C88B3A', speed: 0.005 },
+            { name: 'Saturn', size: 30, distance: 450, color: '#FAD5A5', speed: 0.003 },
+        ];
+
+        solarSystem.forEach(planet => {
+            planets.push({
+                ...planet,
+                angle: Math.random() * Math.PI * 2
+            });
+        });
+
+        function drawStars() {
+            stars.forEach(star => {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                star.y += star.speed;
+                if (star.y > canvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * canvas.width;
+                }
+            });
+        }
+
+        function drawPlanet(planet, centerX, centerY) {
+            if (planet.distance === 0) {
+                // Draw sun
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, planet.size);
+                gradient.addColorStop(0, planet.color);
+                gradient.addColorStop(0.5, '#FF8C00');
+                gradient.addColorStop(1, 'rgba(253, 184, 19, 0.1)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, planet.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Glow effect
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = planet.color;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, planet.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            } else {
+                // Draw orbit
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, planet.distance, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Calculate planet position
+                const x = centerX + Math.cos(planet.angle) * planet.distance;
+                const y = centerY + Math.sin(planet.angle) * planet.distance;
+
+                // Draw planet
+                const gradient = ctx.createRadialGradient(x, y, 0, x, y, planet.size);
+                gradient.addColorStop(0, planet.color);
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x, y, planet.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Saturn's ring
+                if (planet.name === 'Saturn') {
+                    ctx.strokeStyle = 'rgba(250, 213, 165, 0.5)';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, planet.size * 1.8, planet.size * 0.4, 0, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                planet.angle += planet.speed;
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawStars();
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            planets.forEach(planet => {
+                drawPlanet(planet, centerX, centerY);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fullscreen Sketchfab Earth</title>
+    <style>
+       
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; 
+            background-color: black; 
+        }
+
+      
+        .sketchfab-embed-wrapper, iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        
+        
+        #attribution-text {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sketchfab-embed-wrapper">
+        <iframe
+            title="Earth"
+            frameborder="0"
+            /* The 'allow' attribute replaces 'allowfullscreen', fixing the browser warning.
+               It enables autoplay and fullscreen capabilities.
+            */
+            allow="autoplay; fullscreen; xr-spatial-tracking; web-share"
+            
+            /* The source URL includes parameters for functionality:
+               - autostart=1: Starts the animation immediately.
+               - ui_controls=0: Hides all control buttons (zoom, settings, VR).
+               - ui_infos=0: Hides the title bar at the top.
+               - ui_watermark=0: Hides the Sketchfab logo.
+               - ui_hint=0: Hides the initial "click to view" hint.
+            */
+            src="https://sketchfab.com/models/41fc80d85dfd480281f21b74b2de2faa/embed?autostart=1&ui_controls=0&ui_infos=0&ui_watermark=0&ui_hint=0&camera=0&preload=1"
+        >
+        </iframe>
+
+        <p id="attribution-text" style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+            <a href="https://sketchfab.com/3d-models/earth-41fc80d85dfd480281f21b74b2de2faa?utm_medium=embed&utm_campaign=share-popup&utm_content=41fc80d85dfd480281f21b74b2de2faa" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Earth </a> by <a href="https://sketchfab.com/shooter24994?utm_medium=embed&utm_campaign=share-popup&utm_content=41fc80d85dfd480281f21b74b2de2faa" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Akshat </a> on <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=41fc80d85dfd480281f21b74b2de2faa" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+        </p>
+    </div>
+    <script>
+        if (window.location.protocol === 'file:') {
+            console.warn("HOST VALIDATION WARNING: The model will likely fail to load because you are viewing this file directly from your local file system. Please use a local web server (e.g., Live Server) to view this page.");
+        }
+    </script>
+</body>
+</html>
