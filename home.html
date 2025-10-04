@@ -3,82 +3,436 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TerraScope - Explore The Galaxy</title>
-    <link rel="stylesheet" href="css/home.css">
-   
+    <title>Terra 25 - Animation Celebration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #4A90E2;
+        }
+
+        .logo {
+            font-size: 20px;
+            letter-spacing: 8px;
+            font-weight: 300;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        h1 {
+            font-size: clamp(40px, 8vw, 100px);
+            font-weight: 700;
+            letter-spacing: 10px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
+        }
+
+        .hero-description {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: rgba(74, 144, 226, 0.2);
+            border: 2px solid #4A90E2;
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 4px;
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background: rgba(74, 144, 226, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+        }
+
+        .section {
+            padding: 100px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-dark {
+            background: linear-gradient(180deg, #000 0%, #0a0a1a 100%);
+        }
+
+        .section-title {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #4A90E2;
+        }
+
+        .challenge-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .challenge-content h3 {
+            color: #4A90E2;
+            font-size: 24px;
+            margin: 30px 0 15px;
+            letter-spacing: 2px;
+        }
+
+        .challenge-content p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .challenge-content ul {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .challenge-content li {
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 8px;
+            padding: 40px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: #4A90E2;
+            background: rgba(74, 144, 226, 0.05);
+            box-shadow: 0 20px 40px rgba(74, 144, 226, 0.2);
+        }
+
+        .project-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .project-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            color: #4A90E2;
+        }
+
+        .project-theme {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .project-description {
+            font-size: 15px;
+            line-height: 1.7;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .focus-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .focus-list li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .focus-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #4A90E2;
+        }
+
+        footer {
+            background: #000;
+            padding: 40px 50px;
+            text-align: center;
+            border-top: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        footer p {
+            opacity: 0.6;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator::after {
+            content: "↓";
+            font-size: 24px;
+            opacity: 0.6;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                gap: 20px;
+                font-size: 10px;
+            }
+
+            .section {
+                padding: 60px 20px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-card {
+                padding: 30px;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav>
         <div class="nav-links">
-            <a href="#">DESTINATIONS</a>
-            <a href="#">BOOKINGS</a>
+            <a onclick="scrollToSection('hero')">HOME</a>
+            <a onclick="scrollToSection('about')">CHALLENGE</a>
+            <a onclick="scrollToSection('projects')">SOLUTIONS</a>
         </div>
-        <div class="logo">SPACE9</div>
+        <div class="logo">TERRA 25</div>
         <div class="nav-links">
-            <a href="#">TECHNOLOGY</a>
-            <a href="#">MY TRIPS</a>
+            <a href="https://terra.nasa.gov/" target="_blank">NASA TERRA</a>
         </div>
-        <div class="temp">-50° ❄️</div>
     </nav>
 
-    <div class="side-nav">
-        <a href="#" class="side-link">MARS CONDITIONS</a>
-        <a href="#" class="side-link">SAFETY</a>
-        <a href="#" class="side-link">ABOUT US</a>
-    </div>
-
-    <div class="hero">
+    <div id="hero" class="hero">
         <canvas id="canvas"></canvas>
         
         <div class="hero-content">
-            <div class="subtitle">THE SAFEST WAY TO</div>
-            <h1>EXPLORE THE GALAXY</h1>
-            
-            <div class="search-container">
-                <div class="search-field">
-                    <label class="search-label">LAUNCH PAD</label>
-                    <select class="search-input">
-                        <option>SEA</option>
-                        <option>LA</option>
-                        <option>NYC</option>
-                        <option>TOKYO</option>
-                    </select>
-                </div>
-                
-                <div class="search-field">
-                    <label class="search-label">DESTINATION</label>
-                    <select class="search-input">
-                        <option>MOON</option>
-                        <option>MARS</option>
-                        <option>EUROPA</option>
-                        <option>TITAN</option>
-                    </select>
-                </div>
-                
-                <div class="search-field">
-                    <label class="search-label">DATES</label>
-                    <input type="text" class="search-input" value="7.20 - 7.25" readonly>
-                </div>
-                
-                <div class="search-field">
-                    <label class="search-label">PASSENGERS</label>
-                    <select class="search-input">
-                        <option>1 ADULT</option>
-                        <option>2 ADULTS</option>
-                        <option>3 ADULTS</option>
-                        <option>4 ADULTS</option>
-                    </select>
-                </div>
-                
-                <button class="search-btn">SEARCH</button>
-            </div>
+            <div class="subtitle">NASA TERRA'S 25TH ANNIVERSARY</div>
+            <h1><a href="index.html" target="_blank" style="text-decoration: none; color: #fff;">ANIMATION CELEBRATION</a></h1>
+            <p class="hero-description">
+                Explore 25 years of Earth observation through stunning visualizations of our changing planet
+            </p>
+            <a href="#about" class="cta-button" onclick="scrollToSection('about')">Discover The Challenge</a>
+              <a href="index.html" class="cta-button" onclick="scrollToSection('about')">Explore the Galaxy</a>
         </div>
 
-        <div class="featured">
-            <div class="featured-label">FEATURED</div>
-            <div class="featured-title">ADVENTURES</div>
-        </div>
+        <div class="scroll-indicator"></div>
     </div>
+
+    <section id="about" class="section section-dark">
+        <h2 class="section-title">THE CHALLENGE</h2>
+        <div class="challenge-content">
+            <h3>Summary</h3>
+            <p>
+                NASA's oldest daily Earth-viewing satellite – Terra – just turned 25 years old, and with five continuously operating instruments onboard (most taking imagery at the same time), Terra has piled up a LOT of data over the years (over 9,000 days and counting!). This data has the potential to shed light on everything from scientific processes to unique events, all while helping solve problems that affect humans. Your challenge is to use data from any or all of Terra's five instruments to create an animated product showcasing an Earth science story and emphasizing the impacts to you, your community, and/or the environment.
+            </p>
+
+            <h3>Background</h3>
+            <p>
+                NASA's oldest daily Earth-viewing satellite – Terra – just turned 25 years old! And with five continuously operating instruments onboard (most taking imagery at the same time), Terra has piled up a LOT of data over the years (over 9,000 days and counting!).
+            </p>
+            <p>
+                You're probably most familiar with Terra's "Blue Marble" image from the Moderate Resolution Imaging Spectroradiometer (MODIS) instrument, but Terra captures so much more than just pretty pictures of our home planet! From the Clouds and the Earth's Radiant Energy System (CERES) instrument's categorization of Earth's energy budget, to the Measurement of Pollution in the Troposphere (MOPITT) instrument's keystone archive of carbon monoxide from fires, to layered views of hurricanes and urban growth taken by the Multi-angle Imaging SpectroRadiometer (MISR) instrument and the Advanced Spaceborne Thermal Emission and Reflection Radiometer (ASTER) instrument's zoom-focus lens, Terra has collected over a quarter of a century's worth of unique and diverse Earth science data. Because Terra's instruments have operated simultaneously over such a long time, these datasets can be combined through animation to generate new insights about Earth and its processes, revealing layered stories that come alive when set in motion.
+            </p>
+
+            <h3>Objectives</h3>
+            <p>
+                For Terra's 25th Anniversary, we're inviting you to join us in an Animation Celebration of Terra Data! Your challenge is to use Terra data – from any or all of its five instruments – to create an animated product showcasing an Earth science story that impacts you, your community, and/or the environment. Your product can be 2-dimensional or 3-dimensional and cover any length of time.
+            </p>
+            <p>
+                Think about how you might make an exciting, animated visualization using Terra data that reveals a unique Earth view or process when set in motion. You could make a movie or series of Graphics Interchange Format (GIF) images, or something else! Use whatever format you think best captures the story you want to tell. Want an even bigger challenge? You could create an animated anaglyph or interactive 3-dimensional Geographic Information System (GIS) product. Don't forget to include an element of movement or animation through a subset of time and/or layers, and pair your animation with commentary on the impacts to humans and/or the environment.
+            </p>
+
+            <h3>Potential Considerations</h3>
+            <ul>
+                <li>You could animate side-by-side comparisons of different datasets to reveal even more "layers" in your animated science story.</li>
+                <li>Feel free to mix-and-match any data from Terra's instruments to create an animation…just don't forget to explain your inspiration and choice of product(s).</li>
+                <li>If you're using more than one Terra instrument, remember to geographically align the datasets (and be aware of the differences in instrument data resolution, too). P.S. NASA's Earthdata Worldview makes this type of animation easy!</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="projects" class="section">
+        <h2 class="section-title">OUR SOLUTIONS</h2>
+        
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-icon">🔥</div>
+                <h3 class="project-title">Blazing Earth</h3>
+                <p class="project-theme">25 Years of Fire and Recovery</p>
+                <p class="project-description">
+                    Tracking how wildfires and vegetation recovery have changed over 25 years using data from NASA's Terra satellite — revealing how our planet burns, heals, and evolves.
+                </p>
+                <p class="project-description">
+                    Our animation tells the story of Earth's changing fire patterns and post-fire vegetation recovery across time, using data from multiple Terra instruments. By combining wildfire data, carbon monoxide emissions, and vegetation indices, we visualize how global warming, human activity, and natural cycles interact — and how our planet is responding.
+                </p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Regions:</p>
+                <ul class="focus-list">
+                    <li>Amazon Rainforest (South America)</li>
+                    <li>Australian Bushfires</li>
+                    <li>California (USA)</li>
+                    <li>Kerala & Western Ghats (India)</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🌊</div>
+                <h3 class="project-title">Rising Blue</h3>
+                <p class="project-theme">25 Years of Coastal Change</p>
+                <p class="project-description">
+                    Visualizing coastal transformation and rising sea levels using 25 years of NASA Terra satellite data — showing how shorelines, wetlands, and coastal cities are being reshaped by climate change.
+                </p>
+                <p class="project-description">
+                    Over the last 25 years, rising sea levels, urbanization, and erosion have changed coastlines worldwide. Using Terra's powerful instruments, we will create an animated visualization that shows how our coasts are shrinking, shifting, and adapting.
+                </p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Regions:</p>
+                <ul class="focus-list">
+                    <li>Kerala Coast (India) — local impact</li>
+                    <li>Maldives — global hotspot for sea-level rise</li>
+                    <li>Jakarta (Indonesia) — fastest-sinking city</li>
+                    <li>Florida (USA) — coastal flooding patterns</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🌆</div>
+                <h3 class="project-title">Breathe</h3>
+                <p class="project-theme">25 Years of Urban Growth and Air Pollution</p>
+                <p class="project-description">
+                    Exploring how urban expansion over the last 25 years has transformed air quality and the environment using Terra satellite data — revealing how cities grow, breathe, and struggle to stay healthy.
+                </p>
+                <p class="project-description">
+                    Cities are growing faster than ever — but so is pollution. Using data from NASA's Terra satellite, this project visualizes the link between urbanization and air quality from 2000 to 2025. Through 25 years of Terra data, we'll show how cities evolve — from expanding skylines to thickening smog layers — and how human choices shape the atmosphere we all share.
+                </p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Cities:</p>
+                <ul class="focus-list">
+                    <li>Delhi (India) — rapid growth, extreme smog</li>
+                    <li>Beijing (China) — industrial expansion and recovery</li>
+                    <li>Los Angeles (USA) — pollution control success</li>
+                    <li>Cairo (Egypt) — urban sprawl and desert dust</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>TERRA 25 ANIMATION CELEBRATION © 2025 | NASA EARTH OBSERVATION</p>
+    </footer>
 
     <script>
         const canvas = document.getElementById('canvas');
@@ -90,7 +444,6 @@
         const planets = [];
         const stars = [];
 
-        // Create stars
         for (let i = 0; i < 200; i++) {
             stars.push({
                 x: Math.random() * canvas.width,
@@ -100,7 +453,6 @@
             });
         }
 
-        // Solar system data
         const solarSystem = [
             { name: 'Sun', size: 60, distance: 0, color: '#FDB813', speed: 0 },
             { name: 'Mercury', size: 8, distance: 100, color: '#8C7853', speed: 0.02 },
@@ -135,7 +487,6 @@
 
         function drawPlanet(planet, centerX, centerY) {
             if (planet.distance === 0) {
-                // Draw sun
                 const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, planet.size);
                 gradient.addColorStop(0, planet.color);
                 gradient.addColorStop(0.5, '#FF8C00');
@@ -146,7 +497,6 @@
                 ctx.arc(centerX, centerY, planet.size, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Glow effect
                 ctx.shadowBlur = 30;
                 ctx.shadowColor = planet.color;
                 ctx.beginPath();
@@ -154,18 +504,15 @@
                 ctx.fill();
                 ctx.shadowBlur = 0;
             } else {
-                // Draw orbit
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, planet.distance, 0, Math.PI * 2);
                 ctx.stroke();
 
-                // Calculate planet position
                 const x = centerX + Math.cos(planet.angle) * planet.distance;
                 const y = centerY + Math.sin(planet.angle) * planet.distance;
 
-                // Draw planet
                 const gradient = ctx.createRadialGradient(x, y, 0, x, y, planet.size);
                 gradient.addColorStop(0, planet.color);
                 gradient.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
@@ -175,7 +522,6 @@
                 ctx.arc(x, y, planet.size, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Saturn's ring
                 if (planet.name === 'Saturn') {
                     ctx.strokeStyle = 'rgba(250, 213, 165, 0.5)';
                     ctx.lineWidth = 3;
@@ -210,6 +556,13 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
+
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
     </script>
 </body>
 </html>

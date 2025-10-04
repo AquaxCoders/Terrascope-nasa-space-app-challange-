@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fullscreen Sketchfab Earth</title>
+    <title>Terra 25th Anniversary Visualization Hub</title>
     <style>
-       
+        
         body, html {
             margin: 0;
             padding: 0;
@@ -11,9 +11,9 @@
             height: 100%;
             overflow: hidden; 
             background-color: black; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-      
         .sketchfab-embed-wrapper, iframe {
             width: 100%;
             height: 100%;
@@ -21,31 +21,77 @@
             display: block;
         }
         
-        
         #attribution-text {
             display: none !important;
         }
+
+        /* --- NEW STYLES FOR BUTTON NAVIGATION --- */
+        #project-navigation {
+            position: absolute; 
+            top: 20px;
+            left: 20px;
+            z-index: 10; /* Ensures it is on top of the iframe */
+            width: 250px;
+        }
+
+        .project-button {
+            display: block;
+            background-color: rgba(30, 30, 30, 0.9); /* Dark, slightly transparent background */
+            color: #E0E0E0; /* Light grey text */
+            padding: 12px 15px;
+            margin-bottom: 10px; /* Space between buttons */
+            border-radius: 6px;
+            text-decoration: none; /* Remove underline */
+            cursor: pointer;
+            border-left: 5px solid transparent; /* Placeholder for active state */
+            transition: all 0.2s ease-in-out;
+            font-size: 1.05em;
+            font-weight: 500;
+        }
+
+        .project-button:hover {
+            background-color: rgba(50, 50, 50, 0.95);
+            color: white;
+        }
+        
+        /* Style for the current active project */
+        .project-button.active {
+            border-left-color: #4CAF50; /* Green highlight for the current project */
+            background-color: rgba(60, 60, 60, 0.95);
+            color: white;
+            font-weight: 700;
+        }
+        
+        .project-button .emoji {
+            margin-right: 8px;
+        }
+
     </style>
 </head>
 <body>
 
+    <div id="project-navigation">
+        <a href="../terradatapages/carbonmonoxide.html" class="project-button active" data-project="blazing-earth">
+            <span class="emoji">🔥</span> Blazing Earth: 25 Years of Fire and Recovery
+        </a>
+        
+        <a href="#" class="project-button" data-project="rising-blue">
+            <span class="emoji">🌊</span> Rising Blue: 25 Years of Coastal Change
+        </a>
+        
+        <a href="#" class="project-button" data-project="breathe">
+            <span class="emoji">💨</span> Breathe: 25 Years of Urban Growth and Air Pollution
+        </a>
+    </div>
+    
     <div class="sketchfab-embed-wrapper">
         <iframe
             title="Earth"
+            id="api-frame"
             frameborder="0"
-            /* The 'allow' attribute replaces 'allowfullscreen', fixing the browser warning.
-               It enables autoplay and fullscreen capabilities.
-            */
             allow="autoplay; fullscreen; xr-spatial-tracking; web-share"
-            
-            /* The source URL includes parameters for functionality:
-               - autostart=1: Starts the animation immediately.
-               - ui_controls=0: Hides all control buttons (zoom, settings, VR).
-               - ui_infos=0: Hides the title bar at the top.
-               - ui_watermark=0: Hides the Sketchfab logo.
-               - ui_hint=0: Hides the initial "click to view" hint.
-            */
-            src="https://sketchfab.com/models/41fc80d85dfd480281f21b74b2de2faa/embed?autostart=1&ui_controls=0&ui_infos=0&ui_watermark=0&ui_hint=0&camera=0&preload=1"
+            /* The 'id="api-frame"' and 'api_script=1' are necessary for the JavaScript animation */
+            src="https://sketchfab.com/models/41fc80d85dfd480281f21b74b2de2faa/embed?autostart=1&ui_controls=0&ui_infos=0&ui_watermark=0&ui_hint=0&camera=0&preload=1&api_script=1"
         >
         </iframe>
 
@@ -57,6 +103,28 @@
         if (window.location.protocol === 'file:') {
             console.warn("HOST VALIDATION WARNING: The model will likely fail to load because you are viewing this file directly from your local file system. Please use a local web server (e.g., Live Server) to view this page.");
         }
+        
+        // --- JAVASCRIPT FOR BUTTON FUNCTIONALITY ---
+        const projectButtons = document.querySelectorAll('.project-button');
+
+        projectButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+    // Remove this line:
+    // e.preventDefault();
+
+    projectButtons.forEach(btn => btn.classList.remove('active'));
+    this.classList.add('active');
+});
+        });
+
+       
+        function loadProjectVisualization(projectId) {
+            console.log(`Loading visualization for project: ${projectId}`);
+          
+        }
+
+        loadProjectVisualization('blazing-earth');
+
     </script>
 </body>
 </html>

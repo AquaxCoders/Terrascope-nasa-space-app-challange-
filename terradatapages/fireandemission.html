@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire Watch: The Rising Inferno</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #ff6b35;
+            --color-secondary: #ffd166;
+            --color-text: #ffffff;
+            --color-bg: #000000;
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Orbitron', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* STARFIELD BACKGROUND */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes glow-pulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 10px var(--color-primary);
+            }
+
+            50% {
+                text-shadow: 0 0 20px var(--color-primary), 0 0 30px var(--color-primary);
+            }
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(255, 107, 53, 0.3);
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+            height: 70px;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            color: var(--color-primary);
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        .nav-links a {
+            color: var(--color-text);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 70%;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        /* MAIN CONTENT */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .card {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(255, 107, 53, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(255, 107, 53, 0.25);
+            border-color: rgba(255, 107, 53, 0.4);
+        }
+
+        /* 3D CANVAS */
+        .canvas-container {
+            width: 100%;
+            height: 500px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.2);
+            background: #000;
+        }
+
+        /* COMPARISON GRID */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .gif-frame {
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .gif-frame:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 107, 53, 0.6);
+            box-shadow: 0 10px 40px rgba(255, 107, 53, 0.3);
+        }
+
+        .gif-frame.end-state {
+            border-color: var(--color-secondary);
+            animation: danger-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes danger-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 5px 20px rgba(255, 209, 102, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 10px 40px rgba(255, 209, 102, 0.7);
+            }
+        }
+
+        .gif-frame img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .key-insight {
+            background: linear-gradient(90deg, #ff6b35, #ff9e00);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: var(--color-primary);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #ff8c5a;
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* NEW STYLES FOR PERSONAL IMPACT SECTION */
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .impact-card {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid var(--color-primary);
+            transition: all 0.3s ease;
+        }
+
+        .impact-card:hover {
+            transform: translateX(5px);
+            border-left-color: var(--color-secondary);
+        }
+
+        .impact-card h3 {
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            font-family: var(--font-heading);
+        }
+
+        .impact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--color-primary);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 209, 102, 0.1));
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+
+        .community-story {
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 5px solid var(--color-secondary);
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .story-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #000;
+        }
+
+        .story-quote {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .story-source {
+            font-weight: 700;
+            color: var(--color-secondary);
+        }
+
+        /* GRAPH CONTAINER */
+        #graph-container {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            z-index: 9;
+            width: 250px;
+            padding: 15px;
+            background-color: rgba(30, 30, 30, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+
+            .comparison-grid,
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+            }
+
+            .nav-links {
+                margin-top: 10px;
+            }
+
+            #graph-container {
+                position: relative;
+                width: 100%;
+                left: 0;
+                transform: none;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="starfield"></canvas>
+
+    <nav class="navbar">
+        <div class="logo">WILDFIRE WATCH</div>
+        <div class="nav-links">
+            <a href="#comparison">Data</a>
+            <a href="#impact">Impact</a>
+            <a href="#personal">Your Health</a>
+            <a href="#community">Community</a>
+            <a href="#prevention">Solutions</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <header class="section">
+            <div class="card">
+                <h1 class="text-center"
+                    style="font-family: var(--font-heading); font-size: 3.5rem; color: var(--color-primary); margin-bottom: 20px;">
+                    THE RISING INFERNO
+                </h1>
+                <h2 class="text-center" style="font-size: 1.5rem; color: #aaa; font-weight: 300; margin-bottom: 30px;">
+                    Wildfires and Our Changing Climate
+                </h2>
+                <p class="text-center" style="font-size: 1.2rem; color: #ccc; max-width: 800px; margin: 0 auto 30px;">
+                    An immersive look at how climate change has intensified wildfire seasons, visualized through
+                    satellite data from 2019 to 2024.
+                </p>
+                <div class="text-center">
+                    <a href="#comparison" style="text-decoration: none;">
+                        <button>Explore the Data →</button>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <section id="comparison" class="section">
+            <h2>DATA COMPARISON (2019-2024)</h2>
+            <div class="card">
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">The satellite imagery below reveals the alarming
+                    escalation in wildfire activity and intensity over just four years. We observe a clear
+                    shift from the moderate baseline of 2020 to the extreme fire seasons visible in 2024.</p>
+
+                <div class="comparison-grid">
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: var(--color-primary); margin-bottom: 15px;">2020 Baseline
+                            (Moderate)</p>
+                        <img src="wildfire2019.gif" alt="Wildfire Data 2020" />
+                    </div>
+
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: #ffa94d; margin-bottom: 15px;">2022 Escalation</p>
+                        <img src="wildfire2022.gif" alt="Wildfire Data 2022" />
+                    </div>
+
+                    <div class="gif-frame end-state">
+                        <p style="font-weight: bold; color: var(--color-secondary); margin-bottom: 15px;">2024 Current
+                            (Extreme)</p>
+                        <img src="wildfire2025.gif" alt="Wildfire Data 2024" />
+                    </div>
+                </div>
+
+                <div class="key-insight">
+                    CRITICAL INSIGHT: The shift from moderate fire seasons in 2020 to extreme, widespread burning in 2024
+                    demonstrates a rapid, substantial escalation driven by climate change and human activity.
+                </div>
+            </div>
+        </section>
+        <div id="graph-container">
+            <canvas id="wildfireChart"></canvas>
+        </div>
+
+        <section id="impact" class="section">
+            <h2>HOW WILDFIRES SPREAD & INTENSIFY</h2>
+
+            <div class="card">
+                <h3
+                    style="text-align: center; color: var(--color-primary); font-family: var(--font-heading); margin-bottom: 20px; font-size: 1.8rem;">
+                    3D Visualization: Wildfire Dynamics
+                </h3>
+                <div class="canvas-container" id="scene-container"></div>
+                <p style="text-align: center; font-size: 0.95rem; color: #888; margin-top: 15px;">
+                    Interactive 3D scene showing how wildfires spread through different terrain and vegetation types.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--color-primary); margin-bottom: 20px;">What Drives Modern Wildfires?</h3>
+                <p style="margin-bottom: 20px;">Wildfires are natural phenomena, but their increasing frequency and
+                    intensity are driven by human-caused climate change. The dramatic rise observed from 2020 to 2024 is
+                    predominantly due to:</p>
+
+                <ul style="color: #ccc; margin-left: 20px; line-height: 2;">
+                    <li><strong style="color: #fff;">Climate Change:</strong> Rising temperatures, prolonged droughts,
+                        and changing precipitation patterns create ideal conditions for wildfires to ignite and spread.
+                    </li>
+                    <li><strong style="color: #fff;">Forest Management:</strong> Decades of fire suppression have led to
+                        fuel buildup, while urban expansion into wildland areas increases ignition risks.</li>
+                    <li><strong style="color: #fff;">Human Activity:</strong> Power lines, campfires, discarded
+                        cigarettes, and arson account for the majority of wildfire ignitions.</li>
+                </ul>
+
+                <p style="font-style: italic; margin-top: 30px; color: #aaa;">
+                    These fires directly threaten communities, destroy ecosystems, and release massive amounts of carbon
+                    into the atmosphere, creating a dangerous feedback loop.
+                </p>
+            </div>
+        </section>
+
+        <!-- NEW PERSONAL IMPACT SECTION -->
+        <section id="personal" class="section">
+            <h2>HOW WILDFIRES AFFECT YOU & YOUR FAMILY</h2>
+            <div class="card">
+                <p style="margin-bottom: 30px;">Wildfires aren't just an environmental issue—they're a direct threat
+                    to your health, safety, and the wellbeing of your loved ones. Here's how intensifying wildfire
+                    seasons impact daily life:</p>
+
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <div class="impact-icon">😷</div>
+                        <h3>Respiratory Health</h3>
+                        <p>Wildfire smoke contains fine particulate matter that penetrates deep into lungs, worsening
+                            asthma, bronchitis, and other respiratory conditions. Children and the elderly are especially
+                            vulnerable.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">👁️</div>
+                        <h3>Eye & Skin Irritation</h3>
+                        <p>Smoke and ash cause eye irritation, redness, and vision problems. Skin conditions like eczema
+                            can flare up from exposure to smoke particles and chemical byproducts.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">❤️</div>
+                        <h3>Cardiovascular Strain</h3>
+                        <p>Fine particles from wildfire smoke enter the bloodstream, increasing inflammation and
+                            cardiovascular risks including heart attacks, strokes, and irregular heart rhythms.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">🧠</div>
+                        <h3>Mental Health Impact</h3>
+                        <p>The stress of evacuation, property loss, and constant smoke exposure contributes to anxiety,
+                            depression, and PTSD among affected communities.</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="stat-number">33,000</div>
+                        <div class="stat-label">Deaths annually from wildfire smoke exposure</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">3x</div>
+                        <div class="stat-label">Increase in asthma hospitalizations during fire season</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">$150B</div>
+                        <div class="stat-label">Annual economic costs of wildfires in the U.S.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ENHANCED COMMUNITY SECTION -->
+        <section id="community" class="section">
+            <h2>COMMUNITY IMPACTS & STORIES</h2>
+            <div class="card">
+                <p style="margin-bottom: 30px;">The intensifying wildfire seasons don't just affect individuals—they
+                    reshape our communities, economies, and way of life. Here are real impacts being felt across
+                    fire-prone regions:</p>
+
+                <div class="community-story">
+                    <div class="story-header">
+                        <div class="story-avatar">TJ</div>
+                        <div>
+                            <h3 style="color: var(--color-primary); margin-bottom: 5px;">Tom's Story: The Evacuation
+                                Experience</h3>
+                            <p style="color: #aaa;">Homeowner, Mountain Community</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"We had 15 minutes to grab what we could and leave. The sky was orange, ash
+                        was falling like snow, and the air was so thick you could barely breathe. We lost our home, but
+                        we were lucky—our neighbors lost everything, including irreplaceable family photos and
+                        heirlooms."</p>
+                    <p class="story-source">- Tom Johnson, Wildfire Survivor</p>
+                </div>
+
+                <div class="community-story">
+                    <div class="story-header">
+                        <div class="story-avatar">LS</div>
+                        <div>
+                            <h3 style="color: var(--color-primary); margin-bottom: 5px;">Lisa's Story: The School
+                                Disruption</h3>
+                            <p style="color: #aaa;">Elementary School Principal</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"Last fire season, our school was closed for three weeks due to smoke. When we
+                        reopened, many students had developed respiratory issues, and the psychological impact was
+                        evident. Children were anxious, had trouble concentrating, and some had nightmares about fires.
+                        The educational disruption was significant."</p>
+                    <p class="story-source">- Lisa Sanchez, Elementary School Principal</p>
+                </div>
+
+                <div class="impact-grid" style="margin-top: 40px;">
+                    <div class="impact-card">
+                        <h3>Economic Costs</h3>
+                        <p>Wildfires lead to property destruction, business interruptions, increased insurance premiums,
+                            and massive firefighting costs. The economic burden falls disproportionately on rural and
+                            low-income communities.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Water Security</h3>
+                        <p>Burned watersheds lead to increased erosion, water contamination, and reduced water quality.
+                            This threatens municipal water supplies and increases treatment costs for communities.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="prevention" class="section">
+            <h2>PREVENTION & SOLUTIONS</h2>
+            <div class="card">
+                <p style="margin-bottom: 20px;">The trajectory shown by the data is reversible. Implementing changes at
+                    global, municipal, and individual levels can drastically reduce wildfire risks and impacts:</p>
+
+                <ol style="color: #ccc; margin-left: 20px; line-height: 2.2;">
+                    <li><strong style="color: #fff;">Climate Action:</strong> Reducing greenhouse gas emissions is
+                        essential to slow the warming that drives extreme fire weather.</li>
+                    <li><strong style="color: #fff;">Forest Management:</strong> Implementing prescribed burns, thinning
+                        overgrown forests, and creating defensible space around communities.</li>
+                    <li><strong style="color: #fff;">Smart Development:</strong> Restricting building in high-risk
+                        fire zones and implementing fire-resistant building codes.</li>
+                    <li><strong style="color: #fff;">Early Detection:</strong> Investing in advanced monitoring
+                        technology and rapid response systems to catch fires when they're small.</li>
+                </ol>
+
+                <div style="margin-top: 40px;">
+                    <h3 style="color: var(--color-primary); margin-bottom: 20px;">What You Can Do Today</h3>
+                    <div class="impact-grid">
+                        <div class="impact-card">
+                            <h3>At Home</h3>
+                            <ul style="color: #ccc; margin-left: 20px; margin-top: 10px;">
+                                <li>Create defensible space around your property</li>
+                                <li>Use fire-resistant building materials</li>
+                                <li>Prepare an emergency evacuation plan</li>
+                                <li>Install ember-resistant vents</li>
+                            </ul>
+                        </div>
+
+                        <div class="impact-card">
+                            <h3>In Your Community</h3>
+                            <ul style="color: #ccc; margin-left: 20px; margin-top: 10px;">
+                                <li>Support prescribed burn programs</li>
+                                <li>Advocate for fire-adapted community planning</li>
+                                <li>Join local Firewise communities</li>
+                                <li>Volunteer for forest restoration projects</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="key-insight" style="background: linear-gradient(90deg, #10e300, #009900); margin-top: 40px;">
+                    The health of our forests is a reflection of the health of our planet. Small changes, collectively,
+                    create a major global shift.
+                </p>
+            </div>
+        </section>
+
+        <footer class="text-center" style="padding: 60px 0; font-size: 0.95rem; color: #666;">
+            <p style="margin-bottom: 10px;">&copy; 2025 Wildfire Watch Initiative. Data visualization inspires action.
+            </p>
+            <p>Made with ♥ to protect our home.</p>
+        </footer>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // ==========================================
+        // STARFIELD BACKGROUND
+        // ==========================================
+        const WILDFIRE_DATA = {
+            '2020': 100, // Baseline Moderate
+            '2021': 115, // Slight Increase
+            '2022': 140, // Escalation
+            '2023': 170, // Severe
+            '2024': 220  // Extreme (showing the "alarming escalation")
+        };
+
+        // Function to generate the chart
+        function generateWildfireChart() {
+            const ctx = document.getElementById('wildfireChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line', // A line chart shows progression over time
+                data: {
+                    labels: Object.keys(WILDFIRE_DATA),
+                    datasets: [{
+                        label: 'Wildfire Severity Index',
+                        data: Object.values(WILDFIRE_DATA),
+                        backgroundColor: 'rgba(255, 107, 53, 0.2)',
+                        borderColor: 'rgba(255, 107, 53, 0.8)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        pointBackgroundColor: Object.values(WILDFIRE_DATA).map((value, index) => {
+                            if (index === 0) return 'rgba(100, 100, 255, 0.8)'; // Blue for 2020
+                            if (index === Object.values(WILDFIRE_DATA).length - 1) return 'rgba(255, 99, 132, 0.8)'; // Red for 2024
+                            return 'rgba(255, 209, 102, 0.8)'; // Yellow for intermediate years
+                        }),
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Wildfire Severity Escalation (2020-2024)',
+                            color: 'white'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize the chart when the page loads
+        window.addEventListener('load', generateWildfireChart);
+
+        const starCanvas = document.getElementById('starfield');
+        const starCtx = starCanvas.getContext('2d');
+
+        starCanvas.width = window.innerWidth;
+        starCanvas.height = window.innerHeight;
+
+        const stars = [];
+        const starCount = 300;
+
+        for (let i = 0; i < starCount; i++) {
+            stars.push({
+                x: Math.random() * starCanvas.width,
+                y: Math.random() * starCanvas.height,
+                radius: Math.random() * 2,
+                speed: Math.random() * 0.3 + 0.1,
+                opacity: Math.random() * 0.7 + 0.3
+            });
+        }
+
+        function animateStars() {
+            starCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            starCtx.fillRect(0, 0, starCanvas.width, starCanvas.height);
+
+            stars.forEach(star => {
+                star.y += star.speed;
+
+                if (star.y > starCanvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * starCanvas.width;
+                }
+
+                starCtx.beginPath();
+                starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                starCtx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                starCtx.fill();
+            });
+
+            requestAnimationFrame(animateStars);
+        }
+
+        animateStars();
+
+        window.addEventListener('resize', () => {
+            starCanvas.width = window.innerWidth;
+            starCanvas.height = window.innerHeight;
+        });
+
+        // ==========================================
+        // 3D SCENE WITH THREE.JS - WILDFIRE ANIMATION
+        // ==========================================
+        const container = document.getElementById('scene-container');
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        scene.fog = new THREE.Fog(0x000000, 10, 50);
+
+        // Camera
+        const camera = new THREE.PerspectiveCamera(
+            60,
+            container.clientWidth / container.clientHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(15, 10, 15);
+        camera.lookAt(0, 0, 0);
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+
+        const fireLight = new THREE.PointLight(0xff6b35, 2, 100);
+        fireLight.position.set(0, 5, 0);
+        fireLight.castShadow = true;
+        scene.add(fireLight);
+
+        // Ground - Forest Floor
+        const groundGeo = new THREE.PlaneGeometry(50, 50);
+        const groundMat = new THREE.MeshStandardMaterial({
+            color: 0x1a0f00,
+            roughness: 0.9,
+            metalness: 0.1
+        });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = 0;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Trees
+        const treeGroup = new THREE.Group();
+
+        function createTree(x, z, height) {
+            const tree = new THREE.Group();
+
+            // Trunk
+            const trunkGeo = new THREE.CylinderGeometry(0.3, 0.4, height * 0.3, 8);
+            const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5d4037 });
+            const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+            trunk.position.y = height * 0.15;
+            trunk.castShadow = true;
+            tree.add(trunk);
+
+            // Foliage
+            const foliageGeo = new THREE.ConeGeometry(height * 0.4, height * 0.7, 8);
+            const foliageMat = new THREE.MeshStandardMaterial({ color: 0x2e7d32 });
+            const foliage = new THREE.Mesh(foliageGeo, foliageMat);
+            foliage.position.y = height * 0.3 + height * 0.35;
+            foliage.castShadow = true;
+            tree.add(foliage);
+
+            tree.position.set(x, 0, z);
+            return tree;
+        }
+
+        // Create a forest
+        for (let i = 0; i < 30; i++) {
+            const x = (Math.random() - 0.5) * 40;
+            const z = (Math.random() - 0.5) * 40;
+            const height = Math.random() * 3 + 2;
+            const tree = createTree(x, z, height);
+            treeGroup.add(tree);
+        }
+
+        scene.add(treeGroup);
+
+        // Fire particles
+        const fireParticles = [];
+
+        for (let i = 0; i < 100; i++) {
+            const particleGeo = new THREE.SphereGeometry(0.1 + Math.random() * 0.2, 6, 6);
+            const particleMat = new THREE.MeshBasicMaterial({
+                color: new THREE.Color().setHSL(0.05 + Math.random() * 0.1, 1, 0.5),
+                transparent: true,
+                opacity: 0.7
+            });
+            const particle = new THREE.Mesh(particleGeo, particleMat);
+
+            // Position particles in a fire-like shape
+            const radius = Math.random() * 3;
+            const angle = Math.random() * Math.PI * 2;
+            particle.position.set(
+                Math.cos(angle) * radius,
+                Math.random() * 4,
+                Math.sin(angle) * radius
+            );
+
+            particle.userData = {
+                velocity: new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.02,
+                    0.05 + Math.random() * 0.05,
+                    (Math.random() - 0.5) * 0.02
+                ),
+                life: Math.random() * 100,
+                maxLife: 100,
+                baseY: particle.position.y
+            };
+
+            scene.add(particle);
+            fireParticles.push(particle);
+        }
+
+        // Smoke particles
+        const smokeParticles = [];
+
+        for (let i = 0; i < 50; i++) {
+            const particleGeo = new THREE.SphereGeometry(0.2 + Math.random() * 0.3, 8, 8);
+            const particleMat = new THREE.MeshBasicMaterial({
+                color: 0x333333,
+                transparent: true,
+                opacity: 0.6
+            });
+            const particle = new THREE.Mesh(particleGeo, particleMat);
+
+            // Position smoke particles above the fire
+            const radius = Math.random() * 4;
+            const angle = Math.random() * Math.PI * 2;
+            particle.position.set(
+                Math.cos(angle) * radius,
+                4 + Math.random() * 2,
+                Math.sin(angle) * radius
+            );
+
+            particle.userData = {
+                velocity: new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.01,
+                    0.03 + Math.random() * 0.02,
+                    (Math.random() - 0.5) * 0.01
+                ),
+                life: Math.random() * 150,
+                maxLife: 150
+            };
+
+            scene.add(particle);
+            smokeParticles.push(particle);
+        }
+
+        // ==========================================
