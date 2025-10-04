@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melting White: Glacial Retreat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #3b82f6;
+            --color-secondary: #06b6d4;
+            --color-accent: #60a5fa;
+            --color-ice: #60a5fa;
+            --color-text: #ffffff;
+            --color-bg: #000000;
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Orbitron', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% {
+                text-shadow: 0 0 10px var(--color-primary);
+            }
+            50% {
+                text-shadow: 0 0 20px var(--color-primary), 0 0 30px var(--color-primary);
+            }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(59, 130, 246, 0.3);
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            height: 70px;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            color: var(--color-primary);
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        .nav-links a {
+            color: var(--color-text);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 70%;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .card {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(59, 130, 246, 0.25);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 500px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+            background: #000;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .gif-frame {
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            border-radius: 15px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .gif-frame:hover {
+            transform: translateY(-10px);
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .gif-frame.current-state {
+            border-color: var(--color-primary);
+            animation: danger-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes danger-pulse {
+            0%, 100% {
+                box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+            }
+            50% {
+                box-shadow: 0 10px 40px rgba(59, 130, 246, 0.7);
+            }
+        }
+
+        .gif-frame img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .key-insight {
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: var(--color-primary);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #ef4444;
+            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .impact-card {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid var(--color-primary);
+            transition: all 0.3s ease;
+        }
+
+        .impact-card:hover {
+            transform: translateX(5px);
+            border-left-color: var(--color-secondary);
+        }
+
+        .impact-card h3 {
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            font-family: var(--font-heading);
+        }
+
+        .impact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--color-primary);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(249, 115, 22, 0.1));
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+
+        .community-story {
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 5px solid var(--color-accent);
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .story-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .story-quote {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .story-source {
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+
+        .dissolve-visual {
+            background: linear-gradient(to right, #ffffff 0%, #60a5fa 30%, #1e40af 60%, #1f2937 100%);
+            height: 60px;
+            border-radius: 10px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dissolve-label {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .dissolve-label.start {
+            left: 10px;
+            color: #000;
+        }
+
+        .dissolve-label.end {
+            right: 10px;
+            color: #fff;
+        }
+
+        @media (max-width: 900px) {
+            .comparison-grid, .impact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+            }
+
+            .nav-links {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="starfield"></canvas>
+
+    <nav class="navbar">
+        <div class="logo">MELTING WHITE</div>
+        <div class="nav-links">
+            <a href="../planetspages/earth.html">Home</a>
+            <a href="#visualization">Visualization</a>
+            <a href="#himalaya">Himalayan Ice</a>
+            <a href="#arctic">Arctic Ice</a>
+            <a href="#science">Science</a>
+            <a href="#impact">Impact</a>
+            <a href="#solutions">Solutions</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <header id="home" class="section">
+            <div class="card">
+                <h1 class="text-center" style="font-family: var(--font-heading); font-size: 3.5rem; color: var(--color-primary); margin-bottom: 20px;">
+                    MELTING WHITE
+                </h1>
+                <h2 class="text-center" style="font-size: 1.5rem; color: #aaa; font-weight: 300; margin-bottom: 30px;">
+                    Glacial Retreat: The Vanishing Cryosphere
+                </h2>
+
+                <div class="dissolve-visual">
+                    <div class="dissolve-label start">WHITE ICE</div>
+                    <div class="dissolve-label end">DARK TERRAIN</div>
+                </div>
+
+                <p class="text-center" style="font-size: 1.2rem; color: #ccc; max-width: 800px; margin: 0 auto 30px;">
+                    Watch the Earth's frozen regions disappear before our eyes. From the towering Himalayas to the Arctic ice cap, warming temperatures are dissolving the white that once defined our planet's coldest regions.
+                </p>
+                <div class="text-center">
+                    <a href="#visualization" style="text-decoration: none;">
+                        <button>Witness the Melt →</button>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <section id="visualization" class="section">
+            <h2>30 YEARS OF ARCTIC SEA ICE TRANSFORMATION</h2>
+            <div class="card">
+                <h3 style="color: var(--color-primary); margin-bottom: 20px; text-align: center;">NASA Visualization: 1984-2016</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                    This NASA visualization reveals the dynamic beauty and tragic decline of Arctic sea ice over three decades. The animation shows ice age—younger ice appears in darker blue, while the oldest, thickest ice glows bright white. Watch as the quantity of multi-year ice dramatically diminishes, leaving behind a thinner, more vulnerable ice cap.
+                </p>
+
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/hlVXOC6a3ME" 
+                        title="Arctic Sea Ice Age Visualization" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+
+                <p style="font-style: italic; margin-top: 20px; color: #aaa; text-align: center;">
+                    Research into Arctic sea ice behavior over 30 years has revealed how this critical system responds to winds, ocean currents, and warming temperatures—and how dramatically it has changed.
+                </p>
+
+                <div class="key-insight">
+                    The Arctic is warming twice as fast as the rest of the planet. What took millions of years to build is vanishing in decades.
+                </div>
+            </div>
+        </section>
+
+        <section id="himalaya" class="section">
+            <h2>HIMALAYAN SNOW COVER: ASIA'S WATER TOWER</h2>
+            <div class="card">
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                    The Himalayas contain the largest ice mass outside the polar regions, feeding rivers that sustain over 2 billion people across Asia. Satellite data reveals accelerating snow and ice loss across this critical region from 2012 to 2025.
+                </p>
+
+                <div class="comparison-grid">
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: #60a5fa; margin-bottom: 15px;">2012 Baseline</p>
+                        <img src="ice2012.gif" alt="Himalayan Ice 2012" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Extensive snow cover</p>
+                    </div>
+
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: #ffa94d; margin-bottom: 15px;">2021 Decline</p>
+                        <img src="ice2021.gif" alt="Himalayan Ice 2018" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Visible retreat</p>
+                    </div>
+
+                    <div class="gif-frame current-state">
+                        <p style="font-weight: bold; color: var(--color-primary); margin-bottom: 15px;">2025 Current</p>
+                        <img src="ice2025.gif" alt="Himalayan Ice 2025" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Dramatic loss</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="stat-number">33%</div>
+                        <div class="stat-label">Of Himalayan ice lost by 2100 (current trajectory)</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">2B+</div>
+                        <div class="stat-label">People depend on Himalayan water sources</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">15%</div>
+                        <div class="stat-label">Glacier loss since 2000</div>
+                    </div>
+                </div>
+
+                <div class="key-insight" style="margin-top: 40px;">
+                    CRITICAL INSIGHT: White snow reflects sunlight, keeping regions cool. As it melts to reveal dark rock and soil, more heat is absorbed—accelerating the melt in a deadly feedback loop.
+                </div>
+            </div>
+        </section>
+
+        <section id="arctic" class="section">
+            <h2>ARCTIC ICE: DAYTIME OBSERVATIONS (2019-2025)</h2>
+            <div class="card">
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                    Daytime satellite imagery of Arctic ice reveals the stark transformation in ice extent and thickness. The bright white ice that once dominated polar regions is shrinking year after year, exposing dark ocean waters that absorb heat rather than reflecting it.
+                </p>
+
+                <div class="comparison-grid">
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: #60a5fa; margin-bottom: 15px;">2019 Coverage</p>
+                        <img src="iceatday2019.gif" alt="Arctic Ice Day 2019" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Extensive ice coverage</p>
+                    </div>
+
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: #ffa94d; margin-bottom: 15px;">2022 Recession</p>
+                        <img src="iceatday2021.gif" alt="Arctic Ice Day 2022" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Notable thinning</p>
+                    </div>
+
+                    <div class="gif-frame current-state">
+                        <p style="font-weight: bold; color: var(--color-primary); margin-bottom: 15px;">2025 Current</p>
+                        <img src="iceatday2025.gif" alt="Arctic Ice Day 2025" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Minimum extent</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="stat-number">13%</div>
+                        <div class="stat-label">Decline in Arctic sea ice per decade</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">2030s</div>
+                        <div class="stat-label">Projected ice-free Arctic summers</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">4x</div>
+                        <div class="stat-label">Faster warming than global average</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="science" class="section">
+            <h2>THE SCIENCE OF GLACIAL RETREAT</h2>
+            <div class="card">
+                <h3 style="color: var(--color-primary); margin-bottom: 20px;">Understanding the Melt</h3>
+                
+                <p style="margin-bottom: 20px;">Glacial retreat isn't a distant future scenario—it's happening now, accelerating beyond scientists' worst predictions from just a decade ago. The mechanisms driving this collapse are well understood but terrifying in their implications.</p>
+
+                <h4 style="color: var(--color-accent); margin-top: 30px; margin-bottom: 15px;">The Albedo Effect: A Death Spiral</h4>
+                <p>The albedo effect is the most dangerous positive feedback loop in the climate system:</p>
+                <ul style="color: #ccc; margin-left: 20px; margin-top: 15px; line-height: 2;">
+                    <li><strong style="color: #fff;">White ice and snow reflect 80-90%</strong> of incoming solar radiation back to space</li>
+                    <li><strong style="color: #fff;">Dark ocean water absorbs 90%</strong> of solar energy, heating rapidly</li>
+                    <li><strong style="color: #fff;">Exposed dark terrain</strong> (rock, soil, vegetation) absorbs 70-90% of sunlight</li>
+                    <li><strong style="color: #fff;">More absorption = more melting = less reflection</strong>—a self-reinforcing cycle</li>
+                </ul>
+
+                <div class="dissolve-visual" style="margin: 30px 0;">
+                    <div class="dissolve-label start">90% REFLECTED</div>
+                    <div class="dissolve-label end">90% ABSORBED</div>
+                </div>
+
+                <h4 style="color: var(--color-accent); margin-top: 30px; margin-bottom: 15px;">Why Glaciers Matter</h4>
+                <p>Glaciers and ice sheets aren't just frozen water—they're critical climate regulators and water reservoirs:</p>
+                <ul style="color: #ccc; margin-left: 20px; margin-top: 15px; line-height: 2;">
+                    <li><strong style="color: #fff;">Water Supply:</strong> Mountain glaciers feed rivers during dry seasons, sustaining billions</li>
+                    <li><strong style="color: #fff;">Sea Level:</strong> Greenland and Antarctic ice loss drives ocean rise, threatening coastal cities</li>
+                    <li><strong style="color: #fff;">Ocean Currents:</strong> Freshwater influx disrupts circulation patterns that regulate global climate</li>
+                    <li><strong style="color: #fff;">Permafrost:</strong> Thawing releases methane and CO2, amplifying warming</li>
+                </ul>
+
+                <h4 style="color: var(--color-accent); margin-top: 30px; margin-bottom: 15px;">The Data Doesn't Lie</h4>
+                <p>Recent measurements show acceleration across all ice systems:</p>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-number">-279B</div>
+                        <div class="stat-label">Tons of ice lost per year (global average)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">6.7mm</div>
+                        <div class="stat-label">Annual sea level rise from ice melt alone</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="section">
+            <h2>IMPACT ON YOU & YOUR COMMUNITY</h2>
+            <div class="card">
+                <p style="margin-bottom: 30px;">
+                    Glacial retreat isn't an abstract environmental issue—it cascades through ecosystems and human systems, affecting water, food, weather, and coastal communities worldwide. Here's how it impacts real lives:
+                </p>
+
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <div class="impact-icon">💧</div>
+                        <h3>Water Crisis</h3>
+                        <p>Glaciers act as frozen reservoirs, releasing water slowly through summer months. As they vanish, rivers that sustain agriculture, drinking water, and hydropower become seasonal—flooding in spring, drying in summer.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">🌊</div>
+                        <h3>Rising Seas</h3>
+                        <p>Melting ice sheets add water to oceans, threatening coastal cities where over 40% of humanity lives. Even small increases cause devastating storm surges, saltwater intrusion, and permanent flooding of low-lying areas.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">🌾</div>
+                        <h3>Food Security</h3>
+                        <p>Agriculture across Asia depends on glacier-fed rivers. Irregular water flow disrupts crop cycles, reducing yields. Rice paddies, wheat fields, and fruit orchards that feed billions face water shortages and timing mismatches.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">🌡️</div>
+                        <h3>Extreme Weather</h3>
+                        <p>Ice loss disrupts atmospheric circulation patterns, creating persistent heat waves, droughts, and intense storms. The jet stream becomes erratic, trapping weather systems in place for weeks.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">⚠️</div>
+                        <h3>Glacial Lake Outbursts</h3>
+                        <p>As glaciers melt, they form unstable lakes that can suddenly burst through natural dams, releasing catastrophic floods that destroy villages, infrastructure, and lives with little warning.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">🏔️</div>
+                        <h3>Mountain Communities</h3>
+                        <p>Generations have lived in harmony with glaciers, timing agriculture and daily life to predictable melt cycles. Rapid changes destroy traditional knowledge and force abandonment of ancestral lands.</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="stat-number">680M</div>
+                        <div class="stat-label">People live in low-lying coastal zones at risk from sea level rise</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">2B+</div>
+                        <div class="stat-label">People depend on glacier-fed rivers for water</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>COMMUNITY STORIES</h2>
+            <div class="card">
+                <p style="margin-bottom: 30px;">Behind the satellite imagery are real people watching their worlds transform. These stories capture the human cost of glacial retreat.</p>
+
+                <div class="community-story">
+                    <div class="story-header">
+                        <div class="story-avatar">TS</div>
+                        <div>
+                            <h3 style="color: var(--color-primary); margin-bottom: 5px;">Tashi's Story: Vanishing Glaciers of Nepal</h3>
+                            <p style="color: #aaa;">Mountain Guide, Khumbu Valley</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"I've guided climbers for 25 years. The glacier I grew up beside has retreated two kilometers. Rivers that flowed all year now stop in winter. Our village had to relocate because springs dried up. We see the changes every day—rockfalls where ice used to be, new lakes forming, old paths disappearing. My children ask if the mountains will have snow when they're my age. I don't know what to tell them."</p>
+                    <p class="story-source">- Tashi Sherpa, Mountain Guide</p>
+                </div>
+
+                <div class="community-story">
+                    <div class="story-header">
+                        <div class="story-avatar">IN</div>
+                        <div>
+                            <h3 style="color: var(--color-primary); margin-bottom: 5px;">Inga's Story: Arctic Indigenous Knowledge</h3>
+                            <p style="color: #aaa;">Inuit Elder, Nunavut</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"Our people have lived with the ice for thousands of years. We read it like a book—its color, thickness, sound tells us where to hunt, when to travel. Now it's unreadable. Ice that should be solid breaks. Routes our ancestors used are gone. Young people can't learn traditional knowledge because the ice changes too fast. Animals are confused too—seals, walrus, polar bears—their timing is off. We're losing not just ice, but our way of life, our identity."</p>
+                    <p class="story-source">- Inga Nungaq, Inuit Elder</p>
+                </div>
+
+                <div class="community-story">
+                    <div class="story-header">
+                        <div class="story-avatar">RP</div>
+                        <div>
+                            <h3 style="color: var(--color-primary); margin-bottom: 5px;">Rajesh's Story: Disappearing Water</h3>
+                            <p style="color: #aaa;">Farmer, Northern India</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"The river that waters our fields comes from Himalayan glaciers. Twenty years ago, it flowed strong all summer. Now by June it's already low. By August, barely a trickle. We used to grow three crops—now we struggle for one. Wells are deeper every year, pumps run longer. Younger farmers are leaving for cities because the water isn't reliable anymore. The mountains look different too—less snow, more bare rock. Our grandparents said the snow would always be there. It's not."</p>
+                    <p class="story-source">- Rajesh Patel, Farmer</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="solutions" class="section">
+            <h2>SOLUTIONS & PATHS FORWARD</h2>
+            <div class="card">
+                <p style="margin-bottom: 20px;">While glacial retreat is accelerating, the physics is clear: reduce warming, slow the melt. Every tenth of a degree matters. Here are the interventions that can make a difference:</p>
+
+                <h3 style="color: var(--color-primary); margin-bottom: 20px;">Global Actions</h3>
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <h3>Rapid Emissions Cuts</h3>
+                        <p>The single most important intervention: cut greenhouse gas emissions by 50% by 2030. This requires transitioning from fossil fuels to renewable energy, electrifying transportation, and transforming agriculture and industry.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Protect Remaining Ice</h3>
+                        <p>Arctic and mountain regions need protection from industrial activity. Ban oil drilling in polar regions, restrict tourism in fragile areas, and create protected zones around critical glaciers.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Black Carbon Reduction</h3>
+                        <p>Soot from incomplete combustion lands on ice, darkening it and accelerating melt. Cleaning up diesel engines, cookstoves, and industrial emissions can slow ice darkening.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Water Infrastructure Adaptation</h3>
+                        <p>Communities dependent on glacier water need new storage systems, efficient irrigation, and diversified water sources to survive the transition from perennial to seasonal flows.</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--color-primary); margin-top: 40px; margin-bottom: 20px;">What You Can Do</h3>
+                
+                <div style="margin-top: 30px;">
+                    <h4 style="color: var(--color-accent); margin-bottom: 15px;">Personal Actions</h4>
+                    <ul style="color: #ccc; margin-left: 20px; line-height: 2;">
+                        <li>Reduce your carbon footprint: use renewable energy, drive less, fly less, eat less meat</li>
+                        <li>Support organizations protecting polar and mountain regions</li>
+                        <li>Educate yourself and others about glacial retreat and climate impacts</li>
+                        <li>Choose products and services from companies committed to emissions reduction</li>
+                        <li>Calculate and offset your unavoidable emissions through verified carbon projects</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h4 style="color: var(--color-accent); margin-bottom: 15px;">Community Actions</h4>
+                    <ul style="color: #ccc; margin-left: 20px; line-height: 2;">
+                        <li>Push for local renewable energy policies and infrastructure</li>
+                        <li>Support water conservation and efficiency measures</li>
+                        <li>Advocate for climate action at all levels of government</li>
+                        <li>Join or support climate action groups working on systemic change</li>
+                        <li>Demand corporate accountability for emissions and environmental impact</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h4 style="color: var(--color-accent); margin-bottom: 15px;">Political Actions</h4>
+                    <ul style="color: #ccc; margin-left: 20px; line-height: 2;">
+                        <li>Vote for leaders committed to aggressive climate action</li>
+                        <li>Contact representatives demanding emissions reduction policies</li>
+                        <li>Support international agreements protecting polar and mountain regions</li>
+                        <li>Oppose fossil fuel subsidies and expansion projects</li>
+                        <li>Demand climate adaptation funding for vulnerable communities</li>
+                    </ul>
+                </div>
+
+                <div class="key-insight" style="background: linear-gradient(90deg, #60a5fa, #dc2626); margin-top: 40px;">
+                    Every year of delay means more ice lost permanently. But every action taken now helps preserve what remains and protects the billions who depend on frozen water.
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3D VISUALIZATION: THE MELTING PLANET</h2>
+            <div class="card">
+                <h3 style="text-align: center; color: var(--color-primary); font-family: var(--font-heading); margin-bottom: 20px; font-size: 1.8rem;">
+                    Interactive Model: Ice Retreat in Real-Time
+                </h3>
+                <div class="canvas-container" id="scene-container"></div>
+                <p style="text-align: center; font-size: 0.95rem; color: #888; margin-top: 15px;">
+                    Interactive 3D scene showing polar ice cap (white) shrinking and darkening, exposing dark ocean water that absorbs heat and accelerates warming—the albedo feedback loop in action.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>THE URGENCY OF NOW</h2>
+            <div class="card">
+                <p style="font-size: 1.2rem; margin-bottom: 30px; text-align: center; color: var(--color-accent);">
+                    The white is vanishing. What remains is a question of what we do in the next few years.
+                </p>
+
+                <p style="margin-bottom: 20px;">
+                    Scientists once thought we had decades to prevent catastrophic ice loss. New data shows we have years—perhaps only a few—before critical tipping points are crossed. Once ice sheets begin disintegrating, the process becomes irreversible on human timescales.
+                </p>
+
+                <p style="margin-bottom: 20px;">
+                    The Greenland ice sheet is approaching a threshold where even if we stopped all emissions tomorrow, it would continue melting for centuries, raising seas by 20+ feet. Antarctic ice shelves are cracking. Himalayan glaciers that took millennia to form are disappearing in decades.
+                </p>
+
+                <p style="margin-bottom: 20px;">
+                    Yet this isn't a story of inevitable doom—it's a call to action. Physics is unforgiving but also fair: stop heating, stop melting. Every ton of emissions prevented slows the melt. Every renewable energy project built preserves ice. Every policy changed saves glaciers.
+                </p>
+
+                <p style="margin-bottom: 20px;">
+                    The question isn't whether we can stop glacial retreat—we can. The question is whether we will act with the urgency the science demands. The ice has been watching us for millions of years. Now it's our turn to watch it disappear—or to fight for every glacier, every ice shelf, every frozen square kilometer that remains.
+                </p>
+
+                <div style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(96, 165, 250, 0.2)); padding: 30px; border-radius: 15px; margin-top: 40px; border: 2px solid rgba(220, 38, 38, 0.3);">
+                    <h3 style="color: var(--color-primary); margin-bottom: 15px; text-align: center;">From White to Dark</h3>
+                    <p style="text-align: center; font-size: 1.1rem;">
+                        The transition from reflective ice to absorptive terrain isn't just visual—it's thermal, hydrological, and civilizational. What we lose isn't just beauty, but stability. What we fight for isn't just glaciers, but survival.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center" style="padding: 60px 0; font-size: 0.95rem; color: #666;">
+            <p style="margin-bottom: 10px;">&copy; 2025 Melting White Initiative. Data from NASA, ESA, and climate research institutions.</p>
+            <p>The ice is melting. Will we act in time?</p>
+        </footer>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Starfield animation
+        const starCanvas = document.getElementById('starfield');
+        const starCtx = starCanvas.getContext('2d');
+
+        starCanvas.width = window.innerWidth;
+        starCanvas.height = window.innerHeight;
+
+        const stars = [];
+        const starCount = 300;
+
+        for (let i = 0; i < starCount; i++) {
+            stars.push({
+                x: Math.random() * starCanvas.width,
+                y: Math.random() * starCanvas.height,
+                radius: Math.random() * 2,
+                speed: Math.random() * 0.3 + 0.1,
+                opacity: Math.random() * 0.7 + 0.3
+            });
+        }
+
+        function animateStars() {
+            starCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            starCtx.fillRect(0, 0, starCanvas.width, starCanvas.height);
+
+            stars.forEach(star => {
+                star.y += star.speed;
+
+                if (star.y > starCanvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * starCanvas.width;
+                }
+
+                starCtx.beginPath();
+                starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                starCtx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                starCtx.fill();
+            });
+
+            requestAnimationFrame(animateStars);
+        }
+
+        animateStars();
+
+        window.addEventListener('resize', () => {
+            starCanvas.width = window.innerWidth;
+            starCanvas.height = window.innerHeight;
+        });
+
+        // Three.js 3D Scene
+        const container = document.getElementById('scene-container');
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000814);
+        scene.fog = new THREE.Fog(0x000814, 20, 60);
+
+        const camera = new THREE.PerspectiveCamera(
+            50,
+            container.clientWidth / container.clientHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(0, 15, 25);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+        sunLight.position.set(10, 10, 10);
+        scene.add(sunLight);
+
+        // Create Earth sphere
+        const earthGeo = new THREE.SphereGeometry(6, 32, 32);
+        const earthMat = new THREE.MeshStandardMaterial({
+            color: 0x1e3a5f,
+            roughness: 0.6,
+            metalness: 0.2
+        });
+        const earth = new THREE.Mesh(earthGeo, earthMat);
+        scene.add(earth);
+
+        // Ice cap layers - starting white, gradually melting
+        const iceLayers = [];
+        const layerCount = 8;
+        
+        for (let i = 0; i < layerCount; i++) {
+            const radius = 6.3 + (i * 0.3);
+            const iceGeo = new THREE.SphereGeometry(radius, 16, 16, 0, Math.PI * 2, 0, Math.PI * 0.4);
+            const iceMat = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.9 - (i * 0.1),
+                roughness: 0.3,
+                metalness: 0.1
+            });
+            const iceLayer = new THREE.Mesh(iceGeo, iceMat);
+            iceLayer.userData = {
+                initialRadius: radius,
+                meltSpeed: 0.001 + (i * 0.0002),
+                maxMelt: 2 + (i * 0.3)
+            };
+            scene.add(iceLayer);
+            iceLayers.push(iceLayer);
+        }
+
+        // Dark ocean showing through
+        const oceanGeo = new THREE.SphereGeometry(6.2, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.45);
+        const oceanMat = new THREE.MeshStandardMaterial({
+            color: 0x1a2942,
+            roughness: 0.3,
+            metalness: 0.6
+        });
+        const ocean = new THREE.Mesh(oceanGeo, oceanMat);
+        scene.add(ocean);
+
+        // Melting particles
+        const meltParticles = [];
+        for (let i = 0; i < 50; i++) {
+            const particleGeo = new THREE.SphereGeometry(0.05, 6, 6);
+            const particleMat = new THREE.MeshBasicMaterial({
+                color: 0x60a5fa,
+                transparent: true,
+                opacity: 0.7
+            });
+            const particle = new THREE.Mesh(particleGeo, particleMat);
+
+            const angle = Math.random() * Math.PI * 2;
+            const height = Math.random() * 3 + 6;
+            particle.position.set(
+                Math.cos(angle) * 3,
+                height,
+                Math.sin(angle) * 3
+            );
+
+            particle.userData = {
+                velocity: new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.02,
+                    -0.03 - Math.random() * 0.02,
+                    (Math.random() - 0.5) * 0.02
+                ),
+                life: Math.random() * 100,
+                maxLife: 100
+            };
+
+            scene.add(particle);
+            meltParticles.push(particle);
+        }
+
+        let time = 0;
+        let meltProgress = 0;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+            meltProgress += 0.002;
+
+            earth.rotation.y += 0.001;
+            ocean.rotation.y += 0.001;
+
+            // Animate ice melting
+            iceLayers.forEach((layer, index) => {
+                layer.rotation.y += 0.0008;
+                
+                const meltAmount = Math.sin(meltProgress + index * 0.5) * layer.userData.maxMelt;
+                const newRadius = layer.userData.initialRadius - Math.max(0, meltAmount);
+                layer.scale.set(newRadius / layer.userData.initialRadius, newRadius / layer.userData.initialRadius, newRadius / layer.userData.initialRadius);
+                
+                // Fade and darken as it melts
+                const meltRatio = Math.max(0, meltAmount / layer.userData.maxMelt);
+                layer.material.opacity = (0.9 - (index * 0.1)) * (1 - meltRatio * 0.7);
+                
+                const colorValue = 1 - (meltRatio * 0.6);
+                layer.material.color.setRGB(colorValue, colorValue, colorValue);
+            });
+
+            // Animate melt particles
+            meltParticles.forEach(particle => {
+                particle.position.add(particle.userData.velocity);
+                particle.userData.life--;
+
+                if (particle.userData.life <= 0 || particle.position.y < 5) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const height = Math.random() * 3 + 6;
+                    particle.position.set(
+                        Math.cos(angle) * 3,
+                        height,
+                        Math.sin(angle) * 3
+                    );
+                    particle.userData.life = particle.userData.maxLife;
+                }
+
+                const lifePercent = particle.userData.life / particle.userData.maxLife;
+                particle.material.opacity = lifePercent * 0.7;
+            });
+
+            // Camera rotation
+            camera.position.x = 25 * Math.sin(time * 0.1);
+            camera.position.z = 25 * Math.cos(time * 0.1);
+            camera.lookAt(0, 0, 0);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            if (container.clientWidth && container.clientHeight) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        });
+    </script>
+</body>
+
+</html>

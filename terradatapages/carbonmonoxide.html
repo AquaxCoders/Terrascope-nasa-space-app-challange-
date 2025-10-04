@@ -32,7 +32,6 @@
             overflow-x: hidden;
         }
 
-        /* STARFIELD BACKGROUND */
         #starfield {
             position: fixed;
             top: 0;
@@ -55,7 +54,6 @@
             }
         }
 
-        /* NAVBAR */
         .navbar {
             position: fixed;
             top: 0;
@@ -111,7 +109,6 @@
             color: var(--color-primary);
         }
 
-        /* MAIN CONTENT */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -152,7 +149,6 @@
             border-color: rgba(0, 217, 255, 0.4);
         }
 
-        /* 3D CANVAS */
         .canvas-container {
             width: 100%;
             height: 500px;
@@ -164,7 +160,6 @@
             background: #000;
         }
 
-        /* COMPARISON GRID */
         .comparison-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -244,7 +239,6 @@
             transform: translateY(-2px);
         }
 
-        /* NEW STYLES FOR PERSONAL IMPACT SECTION */
         .impact-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -312,7 +306,7 @@
             margin-bottom: 20px;
         }
 
-       
+
 
 
         .story-avatar {
@@ -365,6 +359,7 @@
     <nav class="navbar">
         <div class="logo">THE BLAZZING EARTH</div>
         <div class="nav-links">
+            <a href="../planetspages/earth.html">Home</a>
             <a href="#comparison">Data</a>
             <a href="#impact">Impact</a>
             <a href="#personal">Your Health</a>
@@ -471,7 +466,6 @@
             </div>
         </section>
 
-        <!-- NEW PERSONAL IMPACT SECTION -->
         <section id="personal" class="section">
             <h2>HOW THIS AFFECTS YOU & YOUR FAMILY</h2>
             <div class="card">
@@ -528,7 +522,6 @@
             </div>
         </section>
 
-        <!-- ENHANCED COMMUNITY SECTION -->
         <section id="community" class="section">
             <h2>COMMUNITY IMPACTS & STORIES</h2>
             <div class="card">
@@ -631,74 +624,76 @@
                     create a major global shift.
                 </p>
 
-                  <p class="key-insight" style="background: linear-gradient(90deg, #e39b00, #009900); margin-top: 40px;">
-                  <a href="fireandemission.html" style="text-decoration: none; color: wheat;"> Check out the data about the rising fire and emission trends comparisson </a> 
+                <p class="key-insight" style="background: linear-gradient(90deg, #e39b00, #009900); margin-top: 40px;">
+                    <a href="fireandemission.html" style="text-decoration: none; color: wheat;"> Check out the data
+                        about the rising fire and emission trends comparisson </a>
                 </p>
             </div>
         </section>
 
         <footer class="text-center" style="padding: 60px 0; font-size: 0.95rem; color: #666;">
-            <p style="margin-bottom: 10px;">&copy; 2025 THE BLAZZING EARTH Initiative. Data visualization inspires action.</p>
+            <p style="margin-bottom: 10px;">&copy; 2025 THE BLAZZING EARTH Initiative. Data visualization inspires
+                action.</p>
             <p>Made with ♥ to protect our home.</p>
         </footer>
 
     </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-       
-         const CO_DATA = {
-        '2022': 100, 
-        '2023': 125, 
-        '2024': 180  
-    };
-    
-    function generateCOChart() {
-        const ctx = document.getElementById('coChart').getContext('2d');
-        
-        new Chart(ctx, {
-            type: 'bar', // A bar chart is great for comparing discrete values
-            data: {
-                labels: Object.keys(CO_DATA), // ['2022', '2023', '2024']
-                datasets: [{
-                    label: 'Avg. Global CO Concentration Index',
-                    data: Object.values(CO_DATA), // [100, 125, 180]
-                    backgroundColor: [
-                        'rgba(100, 100, 255, 0.7)', // Blue for 2022 Baseline
-                        'rgba(75, 192, 192, 0.7)',  // Teal for 2023 Midpoint
-                        'rgba(255, 99, 132, 0.8)'   // Red for 2024 High
-                    ],
-                    borderColor: 'rgba(255, 255, 255, 0.5)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false, // Allows flexible sizing
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: 'white' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                    },
-                    x: {
-                        ticks: { color: 'white' },
-                        grid: { display: false }
-                    }
+
+        const CO_DATA = {
+            '2022': 100,
+            '2023': 125,
+            '2024': 180
+        };
+
+        function generateCOChart() {
+            const ctx = document.getElementById('coChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: Object.keys(CO_DATA), 
+                    datasets: [{
+                        label: 'Avg. Global CO Concentration Index',
+                        data: Object.values(CO_DATA),
+                        backgroundColor: [
+                            'rgba(100, 100, 255, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',  
+                            'rgba(255, 99, 132, 0.8)'  
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 1
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        display: false
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { display: false }
+                        }
                     },
-                    title: {
-                        display: true,
-                        text: 'Atmospheric CO Escalation (Index)',
-                        color: 'white'
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Atmospheric CO Escalation (Index)',
+                            color: 'white'
+                        }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
 
         const starCanvas = document.getElementById('starfield');
         const starCtx = starCanvas.getContext('2d');
@@ -719,7 +714,7 @@
             });
         }
 
-        
+
         function animateStars() {
             starCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             starCtx.fillRect(0, 0, starCanvas.width, starCanvas.height);
@@ -748,17 +743,12 @@
             starCanvas.height = window.innerHeight;
         });
 
-        // ==========================================
-        // 3D SCENE WITH THREE.JS
-        // ==========================================
         const container = document.getElementById('scene-container');
 
-        // Scene setup
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x000000);
         scene.fog = new THREE.Fog(0x000000, 10, 50);
 
-        // Camera
         const camera = new THREE.PerspectiveCamera(
             60,
             container.clientWidth / container.clientHeight,
@@ -768,13 +758,12 @@
         camera.position.set(8, 6, 12);
         camera.lookAt(0, 0, 0);
 
-        // Renderer
+       
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.shadowMap.enabled = true;
         container.appendChild(renderer.domElement);
 
-        // Lights
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
@@ -787,7 +776,6 @@
         redLight.position.set(-8, 5, -5);
         scene.add(redLight);
 
-        // Ground
         const groundGeo = new THREE.PlaneGeometry(50, 50);
         const groundMat = new THREE.MeshStandardMaterial({
             color: 0x0a0a0a,
@@ -800,12 +788,8 @@
         ground.receiveShadow = true;
         scene.add(ground);
 
-        // ==========================================
-        // VEHICLE MODEL
-        // ==========================================
         const carGroup = new THREE.Group();
 
-        // Car body
         const bodyGeo = new THREE.BoxGeometry(3, 1, 1.5);
         const bodyMat = new THREE.MeshStandardMaterial({
             color: 0xFFFFFF,
@@ -817,14 +801,12 @@
         carBody.castShadow = true;
         carGroup.add(carBody);
 
-        // Car cabin
         const cabinGeo = new THREE.BoxGeometry(1.8, 0.8, 1.3);
         const cabin = new THREE.Mesh(cabinGeo, bodyMat);
         cabin.position.set(-0.2, 1.9, 0);
         cabin.castShadow = true;
         carGroup.add(cabin);
 
-        // Windows
         const windowMat = new THREE.MeshStandardMaterial({
             color: 0x88ccff,
             metalness: 0.9,
@@ -837,7 +819,6 @@
         frontWindow.position.set(0.7, 1.9, 0);
         carGroup.add(frontWindow);
 
-        // Wheels
         const wheelGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.25, 16);
         const wheelMat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
 
@@ -856,7 +837,6 @@
             carGroup.add(wheel);
         });
 
-        // Exhaust pipe
         const exhaustGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.5, 8);
         const exhaustMat = new THREE.MeshStandardMaterial({ color: 0x444444 });
         const exhaustPipe = new THREE.Mesh(exhaustGeo, exhaustMat);
@@ -867,12 +847,8 @@
         carGroup.position.set(-3, 0, 0);
         scene.add(carGroup);
 
-        // ==========================================
-        // FACTORY MODEL
-        // ==========================================
         const factoryGroup = new THREE.Group();
 
-        // Main building
         const buildingGeo = new THREE.BoxGeometry(4, 5, 3);
         const buildingMat = new THREE.MeshStandardMaterial({
             color: 0x1a1a1a,
@@ -883,7 +859,6 @@
         building.castShadow = true;
         factoryGroup.add(building);
 
-        // Smokestacks
         const stackGeo = new THREE.CylinderGeometry(0.3, 0.35, 4, 12);
         const stackMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
 
@@ -897,12 +872,9 @@
         factoryGroup.position.set(5, 0, -3);
         scene.add(factoryGroup);
 
-        // ==========================================
-        // SMOKE PARTICLES
-        // ==========================================
+    
         const smokeParticles = [];
 
-        // Vehicle smoke
         for (let i = 0; i < 20; i++) {
             const particleGeo = new THREE.SphereGeometry(0.2, 8, 8);
             const particleMat = new THREE.MeshBasicMaterial({
@@ -926,7 +898,6 @@
             smokeParticles.push(particle);
         }
 
-        // Factory smoke
         for (let i = 0; i < 30; i++) {
             const particleGeo = new THREE.SphereGeometry(0.25, 8, 8);
             const particleMat = new THREE.MeshBasicMaterial({
@@ -952,38 +923,29 @@
             smokeParticles.push(particle);
         }
 
-        // ==========================================
-        // ANIMATION LOOP
-        // ==========================================
         let time = 0;
 
         function animate() {
             requestAnimationFrame(animate);
             time += 0.01;
 
-            // Rotate entire scene slowly
             carGroup.rotation.y = Math.sin(time * 0.3) * 0.1;
             factoryGroup.rotation.y = Math.cos(time * 0.2) * 0.05;
 
-            // Animate camera
             camera.position.x = 8 * Math.cos(time * 0.1);
             camera.position.z = 12 * Math.sin(time * 0.1);
             camera.lookAt(0, 2, 0);
 
-            // Animate smoke particles
             smokeParticles.forEach(particle => {
                 particle.position.add(particle.userData.velocity);
                 particle.userData.life += 1;
 
-                // Fade out as particle ages
                 const lifeRatio = particle.userData.life / particle.userData.maxLife;
                 particle.material.opacity = Math.max(0, 0.7 * (1 - lifeRatio));
 
-                // Scale up
                 const scale = 1 + lifeRatio * 2;
                 particle.scale.set(scale, scale, scale);
 
-                // Reset particle when it dies
                 if (particle.userData.life >= particle.userData.maxLife) {
                     particle.userData.life = 0;
                     particle.material.opacity = 0.7;
@@ -1003,7 +965,6 @@
 
         animate();
 
-        // Handle window resize
         window.addEventListener('resize', () => {
             const width = container.clientWidth;
             const height = container.clientHeight;

@@ -25,25 +25,24 @@
             display: none !important;
         }
 
-        /* --- NEW STYLES FOR BUTTON NAVIGATION --- */
         #project-navigation {
             position: absolute; 
             top: 20px;
             left: 20px;
-            z-index: 10; /* Ensures it is on top of the iframe */
+            z-index: 10; 
             width: 250px;
         }
 
         .project-button {
             display: block;
-            background-color: rgba(30, 30, 30, 0.9); /* Dark, slightly transparent background */
-            color: #E0E0E0; /* Light grey text */
+            background-color: rgba(30, 30, 30, 0.9); 
+            color: #E0E0E0; 
             padding: 12px 15px;
-            margin-bottom: 10px; /* Space between buttons */
+            margin-bottom: 10px; 
             border-radius: 6px;
-            text-decoration: none; /* Remove underline */
+            text-decoration: none; 
             cursor: pointer;
-            border-left: 5px solid transparent; /* Placeholder for active state */
+            border-left: 5px solid transparent; 
             transition: all 0.2s ease-in-out;
             font-size: 1.05em;
             font-weight: 500;
@@ -54,9 +53,8 @@
             color: white;
         }
         
-        /* Style for the current active project */
         .project-button.active {
-            border-left-color: #4CAF50; /* Green highlight for the current project */
+            border-left-color: #4CAF50; 
             background-color: rgba(60, 60, 60, 0.95);
             color: white;
             font-weight: 700;
@@ -75,13 +73,17 @@
             <span class="emoji">🔥</span> Blazing Earth: 25 Years of Fire and Recovery
         </a>
         
-        <a href="#" class="project-button" data-project="rising-blue">
-            <span class="emoji">🌊</span> Rising Blue: 25 Years of Coastal Change
+        <a href="../terradatapages/breathairpollution.html" class="project-button" data-project="rising-blue">
+            <span class="emoji">🌊</span> Breathe Earth: Air & Pollution Trends
         </a>
         
-        <a href="#" class="project-button" data-project="breathe">
-            <span class="emoji">💨</span> Breathe: 25 Years of Urban Growth and Air Pollution
+        <a href="../terradatapages/urbangrowth.html" class="project-button" data-project="breathe">
+            <span class="emoji">👥</span> Human Footprint: Urban Growth & Land Change
         </a>
+         <a href="../terradatapages/meltingice.html" class="project-button" data-project="breathe">
+            <span class="emoji">🧊</span> Melting White: Glacial Retreat
+        </a>
+        
     </div>
     
     <div class="sketchfab-embed-wrapper">
@@ -104,13 +106,11 @@
             console.warn("HOST VALIDATION WARNING: The model will likely fail to load because you are viewing this file directly from your local file system. Please use a local web server (e.g., Live Server) to view this page.");
         }
         
-        // --- JAVASCRIPT FOR BUTTON FUNCTIONALITY ---
         const projectButtons = document.querySelectorAll('.project-button');
 
         projectButtons.forEach(button => {
           button.addEventListener('click', function(e) {
-    // Remove this line:
-    // e.preventDefault();
+   
 
     projectButtons.forEach(btn => btn.classList.remove('active'));
     this.classList.add('active');
