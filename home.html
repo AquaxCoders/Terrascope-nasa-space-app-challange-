@@ -3,566 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terra 25 - Animation Celebration</title>
+    <title>Interactive Solar System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Arial', sans-serif;
+            margin: 0;
+            overflow: hidden;
             background: #000;
-            color: #fff;
-            overflow-x: hidden;
+            font-family: Arial, sans-serif;
         }
-
-        nav {
-            position: fixed;
-            top: 0;
+        #canvas {
             width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-
-        .nav-links a:hover {
-            color: #4A90E2;
-        }
-
-        .logo {
-            font-size: 20px;
-            letter-spacing: 8px;
-            font-weight: 300;
-        }
-
-        .hero {
-            position: relative;
             height: 100vh;
+            display: block;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            max-width: 300px;
+        }
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        #planet-icons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            gap: 10px;
+        }
+        .planet-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #444;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
             overflow: hidden;
         }
-
-        #canvas {
+        .planet-icon:hover {
+            border-color: #4CAF50;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+        }
+        .planet-icon.active {
+            border-color: #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+        }
+        .planet-icon canvas {
+            width: 100%;
+            height: 100%;
+        }
+        .planet-label {
             position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 10px;
+            white-space: nowrap;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
+            pointer-events: none;
+        }
+        .action-btn {
+            position: absolute;
+            background: rgba(255, 215, 0, 0.9);
+            color: black;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .action-btn:hover {
+            background: rgba(255, 215, 0, 1);
+            transform: scale(1.05);
+        }
+        #zoom-out-btn {
+            top: 50%;
+            right: 90px;
+            transform: translateY(-50%);
+            display: none;
+        }
+        #chat-ai-btn {
+            bottom: 80px;
+            right: 10px;
+        }
+        #explore-3d-btn {
+            bottom: 30px;
+            right: 10px;
+            display: none;
+        }
+        
+        #chat-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            max-width: 90%;
+            height: 500px;
+            background: rgba(20, 20, 30, 0.95);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            z-index: 1000;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+        #chat-overlay {
+            display: none;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
         }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 20px;
+        #chat-header {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: black;
+            padding: 15px;
+            border-radius: 13px 13px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .subtitle {
-            font-size: 14px;
-            letter-spacing: 8px;
-            margin-bottom: 20px;
-            opacity: 0.8;
-            font-weight: 300;
-        }
-
-        h1 {
-            font-size: clamp(40px, 8vw, 100px);
-            font-weight: 700;
-            letter-spacing: 10px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
-        }
-
-        .hero-description {
-            font-size: 18px;
-            max-width: 800px;
-            margin: 0 auto 40px;
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-
-        .cta-button {
-            background: rgba(74, 144, 226, 0.2);
-            border: 2px solid #4A90E2;
-            color: #fff;
-            padding: 15px 40px;
-            border-radius: 4px;
-            font-size: 14px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .cta-button:hover {
-            background: rgba(74, 144, 226, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
-        }
-
-        .section {
-            padding: 100px 50px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-dark {
-            background: linear-gradient(180deg, #000 0%, #0a0a1a 100%);
-        }
-
-        .section-title {
-            font-size: clamp(32px, 5vw, 56px);
-            font-weight: 700;
-            letter-spacing: 4px;
-            margin-bottom: 40px;
-            text-align: center;
-            color: #4A90E2;
-        }
-
-        .challenge-content {
-            max-width: 900px;
-            margin: 0 auto;
-            line-height: 1.8;
-            font-size: 16px;
-        }
-
-        .challenge-content h3 {
-            color: #4A90E2;
+        #chat-close {
+            background: none;
+            border: none;
+            color: black;
             font-size: 24px;
-            margin: 30px 0 15px;
-            letter-spacing: 2px;
-        }
-
-        .challenge-content p {
-            margin-bottom: 20px;
-            opacity: 0.9;
-        }
-
-        .challenge-content ul {
-            margin: 20px 0;
-            padding-left: 30px;
-        }
-
-        .challenge-content li {
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
-        }
-
-        .project-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(74, 144, 226, 0.3);
-            border-radius: 8px;
-            padding: 40px;
-            transition: all 0.3s;
             cursor: pointer;
+            font-weight: bold;
         }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: #4A90E2;
-            background: rgba(74, 144, 226, 0.05);
-            box-shadow: 0 20px 40px rgba(74, 144, 226, 0.2);
+        #chat-messages {
+            height: 360px;
+            overflow-y: auto;
+            padding: 15px;
+            color: white;
         }
-
-        .project-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+         #chat-ai-btn {
+            bottom: 80px;
+            right: 10px;
         }
-
-        .project-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-            color: #4A90E2;
-        }
-
-        .project-theme {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-
-        .project-description {
-            font-size: 15px;
-            line-height: 1.7;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-
-        .focus-list {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-        }
-
-        .focus-list li {
-            padding: 8px 0;
-            padding-left: 20px;
-            position: relative;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .focus-list li:before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: #4A90E2;
-        }
-
-        footer {
-            background: #000;
-            padding: 40px 50px;
-            text-align: center;
-            border-top: 1px solid rgba(74, 144, 226, 0.2);
-        }
-
-        footer p {
-            opacity: 0.6;
-            font-size: 14px;
-            letter-spacing: 2px;
-        }
-
-        .scroll-indicator {
-            position: absolute;
+        #explore-3d-btn {
             bottom: 30px;
+            right: 10px;
+            display: none;
+        }
+        
+        #chat-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            animation: bounce 2s infinite;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            max-width: 90%;
+            height: 500px;
+            background: rgba(20, 20, 30, 0.95);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            z-index: 1000;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
         }
-
-        .scroll-indicator::after {
-            content: "↓";
+        #chat-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        #chat-header {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: black;
+            padding: 15px;
+            border-radius: 13px 13px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #chat-close {
+            background: none;
+            border: none;
+            color: black;
             font-size: 24px;
-            opacity: 0.6;
+            cursor: pointer;
+            font-weight: bold;
         }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(10px); }
+        #chat-messages {
+            height: 360px;
+            overflow-y: auto;
+            padding: 15px;
+            color: white;
         }
-
-        @media (max-width: 768px) {
-            nav {
-                padding: 15px 20px;
-                flex-wrap: wrap;
-            }
-
-            .nav-links {
-                gap: 20px;
-                font-size: 10px;
-            }
-
-            .section {
-                padding: 60px 20px;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .project-card {
-                padding: 30px;
-            }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .user-message {
+            background: rgba(76, 175, 80, 0.3);
+            margin-left: auto;
+            text-align: right;
+        }
+        .ai-message {
+            background: rgba(33, 150, 243, 0.3);
+        }
+        #chat-input-container {
+            padding: 15px;
+            border-top: 1px solid #444;
+            display: flex;
+            gap: 10px;
+        }
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+        #chat-send {
+            padding: 10px 20px;
+            background: #FFD700;
+            border: none;
+            border-radius: 8px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #chat-send:hover {
+            background: #FFA500;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="nav-links">
-            <a onclick="scrollToSection('hero')">HOME</a>
-            <a onclick="scrollToSection('about')">CHALLENGE</a>
-            <a onclick="scrollToSection('projects')">SOLUTIONS</a>
-        </div>
-        <div class="logo">TERRA 25</div>
-        <div class="nav-links">
-            <a href="https://terra.nasa.gov/" target="_blank">NASA TERRA</a>
-        </div>
-    </nav>
+    <div id="canvas"></div>
+    <div id="info">
+        <h3 style="margin-top: 0;">Interactive Solar System</h3>
+        <p>Click on planet icons or in 3D space!</p>
+        <div id="current-planet" style="margin-top: 10px; color: #4CAF50;"></div>
+    </div>
+    <div id="controls">
+        <b>Controls:</b><br>
+        Left Mouse: Rotate view<br>
+        Right Mouse: Pan<br>
+        Scroll: Zoom<br>
+        Click Planet/Icon: Focus
+    </div>
+    <div id="planet-icons"></div>
+    <button id="zoom-out-btn" class="action-btn">← Zoom Out</button>
+    <button id="chat-ai-btn" class="action-btn">💬 Chat With AI</button>
+     <button id="Goback" class="goback">💬 Go Back</button>
+    <button id="explore-3d-btn" class="action-btn">🌍 Explore 3D</button>
 
-    <div id="hero" class="hero">
-        <canvas id="canvas"></canvas>
-        
-        <div class="hero-content">
-            <div class="subtitle">NASA TERRA'S 25TH ANNIVERSARY</div>
-            <h1><a href="index.html" target="_blank" style="text-decoration: none; color: #fff;">ANIMATION CELEBRATION</a></h1>
-            <p class="hero-description">
-                Explore 25 years of Earth observation through stunning visualizations of our changing planet
-            </p>
-            <a href="#about" class="cta-button" onclick="scrollToSection('about')">Discover The Challenge</a>
-              <a href="index.html" class="cta-button" onclick="scrollToSection('about')">Explore the Galaxy</a>
+    <div id="chat-overlay"></div>
+    <div id="chat-modal">
+        <div id="chat-header">
+            <h3 style="margin: 0;">Space AI Assistant</h3>
+            <button id="chat-close">&times;</button>
         </div>
-
-        <div class="scroll-indicator"></div>
+        <div id="chat-messages"></div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Ask about planets...">
+            <button id="chat-send">Send</button>
+        </div>
     </div>
 
-    <section id="about" class="section section-dark">
-        <h2 class="section-title">THE CHALLENGE</h2>
-        <div class="challenge-content">
-            <h3>Summary</h3>
-            <p>
-                NASA's oldest daily Earth-viewing satellite – Terra – just turned 25 years old, and with five continuously operating instruments onboard (most taking imagery at the same time), Terra has piled up a LOT of data over the years (over 9,000 days and counting!). This data has the potential to shed light on everything from scientific processes to unique events, all while helping solve problems that affect humans. Your challenge is to use data from any or all of Terra's five instruments to create an animated product showcasing an Earth science story and emphasizing the impacts to you, your community, and/or the environment.
-            </p>
-
-            <h3>Background</h3>
-            <p>
-                NASA's oldest daily Earth-viewing satellite – Terra – just turned 25 years old! And with five continuously operating instruments onboard (most taking imagery at the same time), Terra has piled up a LOT of data over the years (over 9,000 days and counting!).
-            </p>
-            <p>
-                You're probably most familiar with Terra's "Blue Marble" image from the Moderate Resolution Imaging Spectroradiometer (MODIS) instrument, but Terra captures so much more than just pretty pictures of our home planet! From the Clouds and the Earth's Radiant Energy System (CERES) instrument's categorization of Earth's energy budget, to the Measurement of Pollution in the Troposphere (MOPITT) instrument's keystone archive of carbon monoxide from fires, to layered views of hurricanes and urban growth taken by the Multi-angle Imaging SpectroRadiometer (MISR) instrument and the Advanced Spaceborne Thermal Emission and Reflection Radiometer (ASTER) instrument's zoom-focus lens, Terra has collected over a quarter of a century's worth of unique and diverse Earth science data. Because Terra's instruments have operated simultaneously over such a long time, these datasets can be combined through animation to generate new insights about Earth and its processes, revealing layered stories that come alive when set in motion.
-            </p>
-
-            <h3>Objectives</h3>
-            <p>
-                For Terra's 25th Anniversary, we're inviting you to join us in an Animation Celebration of Terra Data! Your challenge is to use Terra data – from any or all of its five instruments – to create an animated product showcasing an Earth science story that impacts you, your community, and/or the environment. Your product can be 2-dimensional or 3-dimensional and cover any length of time.
-            </p>
-            <p>
-                Think about how you might make an exciting, animated visualization using Terra data that reveals a unique Earth view or process when set in motion. You could make a movie or series of Graphics Interchange Format (GIF) images, or something else! Use whatever format you think best captures the story you want to tell. Want an even bigger challenge? You could create an animated anaglyph or interactive 3-dimensional Geographic Information System (GIS) product. Don't forget to include an element of movement or animation through a subset of time and/or layers, and pair your animation with commentary on the impacts to humans and/or the environment.
-            </p>
-
-            <h3>Potential Considerations</h3>
-            <ul>
-                <li>You could animate side-by-side comparisons of different datasets to reveal even more "layers" in your animated science story.</li>
-                <li>Feel free to mix-and-match any data from Terra's instruments to create an animation…just don't forget to explain your inspiration and choice of product(s).</li>
-                <li>If you're using more than one Terra instrument, remember to geographically align the datasets (and be aware of the differences in instrument data resolution, too). P.S. NASA's Earthdata Worldview makes this type of animation easy!</li>
-            </ul>
-        </div>
-    </section>
-
-    <section id="projects" class="section">
-        <h2 class="section-title">OUR SOLUTIONS</h2>
-        
-        <div class="projects-grid">
-            <div class="project-card">
-                <div class="project-icon">🔥</div>
-                <h3 class="project-title">Blazing Earth</h3>
-                <p class="project-theme">25 Years of Fire and Recovery</p>
-                <p class="project-description">
-                    Tracking how wildfires and vegetation recovery have changed over 25 years using data from NASA's Terra satellite — revealing how our planet burns, heals, and evolves.
-                </p>
-                <p class="project-description">
-                    Our animation tells the story of Earth's changing fire patterns and post-fire vegetation recovery across time, using data from multiple Terra instruments. By combining wildfire data, carbon monoxide emissions, and vegetation indices, we visualize how global warming, human activity, and natural cycles interact — and how our planet is responding.
-                </p>
-                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Regions:</p>
-                <ul class="focus-list">
-                    <li>Amazon Rainforest (South America)</li>
-                    <li>Australian Bushfires</li>
-                    <li>California (USA)</li>
-                    <li>Kerala & Western Ghats (India)</li>
-                </ul>
-            </div>
-
-            <div class="project-card">
-                <div class="project-icon">🌊</div>
-                <h3 class="project-title">Rising Blue</h3>
-                <p class="project-theme">25 Years of Coastal Change</p>
-                <p class="project-description">
-                    Visualizing coastal transformation and rising sea levels using 25 years of NASA Terra satellite data — showing how shorelines, wetlands, and coastal cities are being reshaped by climate change.
-                </p>
-                <p class="project-description">
-                    Over the last 25 years, rising sea levels, urbanization, and erosion have changed coastlines worldwide. Using Terra's powerful instruments, we will create an animated visualization that shows how our coasts are shrinking, shifting, and adapting.
-                </p>
-                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Regions:</p>
-                <ul class="focus-list">
-                    <li>Kerala Coast (India) — local impact</li>
-                    <li>Maldives — global hotspot for sea-level rise</li>
-                    <li>Jakarta (Indonesia) — fastest-sinking city</li>
-                    <li>Florida (USA) — coastal flooding patterns</li>
-                </ul>
-            </div>
-
-            <div class="project-card">
-                <div class="project-icon">🌆</div>
-                <h3 class="project-title">Breathe</h3>
-                <p class="project-theme">25 Years of Urban Growth and Air Pollution</p>
-                <p class="project-description">
-                    Exploring how urban expansion over the last 25 years has transformed air quality and the environment using Terra satellite data — revealing how cities grow, breathe, and struggle to stay healthy.
-                </p>
-                <p class="project-description">
-                    Cities are growing faster than ever — but so is pollution. Using data from NASA's Terra satellite, this project visualizes the link between urbanization and air quality from 2000 to 2025. Through 25 years of Terra data, we'll show how cities evolve — from expanding skylines to thickening smog layers — and how human choices shape the atmosphere we all share.
-                </p>
-                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Cities:</p>
-                <ul class="focus-list">
-                    <li>Delhi (India) — rapid growth, extreme smog</li>
-                    <li>Beijing (China) — industrial expansion and recovery</li>
-                    <li>Los Angeles (USA) — pollution control success</li>
-                    <li>Cairo (Egypt) — urban sprawl and desert dust</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <p>TERRA 25 ANIMATION CELEBRATION © 2025 | NASA EARTH OBSERVATION</p>
-    </footer>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        let scene, camera, renderer, raycaster, mouse;
+        let sun, planets = [], moons = [];
+        let selectedPlanet = null;
+        let isAnimating = false;
+        let rotationsPaused = false;
+        let iconRenderers = [], iconScenes = [], iconCameras = [], iconPlanets = [];
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const planets = [];
-        const stars = [];
-
-        for (let i = 0; i < 200; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2,
-                speed: Math.random() * 0.5
-            });
-        }
-
-        const solarSystem = [
-            { name: 'Sun', size: 60, distance: 0, color: '#FDB813', speed: 0 },
-            { name: 'Mercury', size: 8, distance: 100, color: '#8C7853', speed: 0.02 },
-            { name: 'Venus', size: 14, distance: 150, color: '#FFC649', speed: 0.015 },
-            { name: 'Earth', size: 15, distance: 200, color: '#4A90E2', speed: 0.01 },
-            { name: 'Mars', size: 12, distance: 260, color: '#E27B58', speed: 0.008 },
-            { name: 'Jupiter', size: 35, distance: 350, color: '#C88B3A', speed: 0.005 },
-            { name: 'Saturn', size: 30, distance: 450, color: '#FAD5A5', speed: 0.003 },
+        const planetData = [
+            {name: 'Mercury', size: 0.4, distance: 8, color: 0x8C7853, orbitSpeed: 0.04, rotationSpeed: 0.01, moons: [], explore3dUrl: 'planetspages/mercury.html'},
+            {name: 'Venus', size: 0.9, distance: 12, color: 0xFFC649, orbitSpeed: 0.03, rotationSpeed: 0.008, moons: [], explore3dUrl: 'planetspages/venus.html'},
+            {name: 'Earth', size: 1, distance: 16, color: 0x2E8B57, orbitSpeed: 0.02, rotationSpeed: 0.01, moons: [{size: 0.27, distance: 2, color: 0xAAAAAA, speed: 0.05}], explore3dUrl: 'planetspages/earth.html'},
+            {name: 'Mars', size: 0.5, distance: 20, color: 0xCD5C5C, orbitSpeed: 0.018, rotationSpeed: 0.009, moons: [], explore3dUrl: 'planetspages/mars.html'},
+            {name: 'Jupiter', size: 2.5, distance: 28, color: 0xDAA520, orbitSpeed: 0.013, rotationSpeed: 0.02, moons: [{size: 0.4, distance: 4, color: 0xBBBBBB, speed: 0.03}], explore3dUrl: 'planetspages/jupiter.html'},
+            {name: 'Saturn', size: 2.2, distance: 38, color: 0xF4A460, orbitSpeed: 0.009, rotationSpeed: 0.018, moons: [{size: 0.5, distance: 5, color: 0xCCCCCC, speed: 0.025}], explore3dUrl: 'planetspages/Saturn.html'},
+            {name: 'Uranus', size: 1.5, distance: 46, color: 0x4FD0E0, orbitSpeed: 0.006, rotationSpeed: 0.015, moons: [], explore3dUrl: 'planetspages/Uranus.html'},
+            {name: 'Neptune', size: 1.5, distance: 54, color: 0x4169E1, orbitSpeed: 0.005, rotationSpeed: 0.014, moons: [], explore3dUrl: 'planetspages/Neptune.html'}
         ];
 
-        solarSystem.forEach(planet => {
-            planets.push({
-                ...planet,
-                angle: Math.random() * Math.PI * 2
-            });
-        });
+        const planetInfo = {
+            'Mercury': 'Mercury is the smallest and innermost planet in the Solar System. It lies about 57.9 million kilometers (0.39 AU) from the Sun and completes an orbit in just 88 Earth days. With a diameter of 4,879 km, it has no moons or rings.',
+            'Venus': 'Venus is the second planet from the Sun, located 108.2 million kilometers (0.72 AU) away. It takes 225 Earth days to orbit the Sun and has a diameter of 12,104 km. Venus has no moons or rings and is the hottest planet due to its thick carbon dioxide atmosphere.',
+            'Earth': 'Earth, our home planet, is 149.6 million kilometers (1 AU) from the Sun. It has a diameter of 12,742 km and orbits the Sun in 365 days. Earth has one natural satellite, the Moon, and no rings. It is the only known planet with liquid water and life.',
+            'Mars': 'Mars, known as the Red Planet, orbits the Sun at a distance of 227.9 million kilometers (1.52 AU). It has a diameter of 6,779 km and takes 687 days to complete one orbit. Mars has two small moons, Phobos and Deimos, and no rings.',
+            'Jupiter': 'Jupiter is the largest planet, 778.5 million kilometers (5.2 AU) from the Sun, with a diameter of 139,820 km. It takes 11.86 Earth years to orbit the Sun. Jupiter has at least 95 moons, including Ganymede, the largest moon in the Solar System. It also has a faint ring system.',
+            'Saturn': 'Saturn, famous for its spectacular rings, is 1.43 billion kilometers (9.58 AU) from the Sun. It has a diameter of 116,460 km and takes 29.5 years to orbit the Sun. Saturn has more than 146 moons, including Titan, which is larger than Mercury.',
+            'Uranus': 'Uranus is 2.87 billion kilometers (19.2 AU) from the Sun and has a diameter of 50,724 km. It takes 84 years to orbit the Sun. Uranus rotates on its side and has 27 known moons, including Titania and Oberon, along with faint rings.',
+            'Neptune': 'Neptune, the farthest planet, lies 4.5 billion kilometers (30.1 AU) from the Sun. It has a diameter of 49,244 km and takes 165 years to complete its orbit. Neptune has 14 known moons, including Triton, and faint dark rings. It is the windiest planet in the Solar System.'
+        };
 
-        function drawStars() {
-            stars.forEach(star => {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                star.y += star.speed;
-                if (star.y > canvas.height) {
-                    star.y = 0;
-                    star.x = Math.random() * canvas.width;
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 30, 60);
+            
+            renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas').appendChild(renderer.domElement);
+            
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            
+            const ambientLight = new THREE.AmbientLight(0x333333);
+            scene.add(ambientLight);
+            
+            const sunGeometry = new THREE.SphereGeometry(3, 32, 32);
+            const sunMaterial = new THREE.MeshBasicMaterial({color: 0xFDB813});
+            sun = new THREE.Mesh(sunGeometry, sunMaterial);
+            scene.add(sun);
+            
+            const sunLight = new THREE.PointLight(0xFFFFFF, 2, 300);
+            sunLight.position.set(0, 0, 0);
+            scene.add(sunLight);
+            
+            createStars();
+            createPlanets();
+            createPlanetIcons();
+            setupControls();
+            setupChatSystem();
+            
+            document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
+            document.getElementById('explore-3d-btn').addEventListener('click', explore3D);
+            window.addEventListener('resize', onWindowResize);
+            renderer.domElement.addEventListener('click', onMouseClick);
+            
+            animate();
+        }
+        
+        function createStars() {
+            const starGeometry = new THREE.BufferGeometry();
+            const starVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                starVertices.push((Math.random() - 0.5) * 2000, (Math.random() - 0.5) * 2000, (Math.random() - 0.5) * 2000);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({color: 0xFFFFFF, size: 0.7}));
+            scene.add(stars);
+        }
+        
+        function createPlanets() {
+            planetData.forEach((data, index) => {
+                const planet = new THREE.Mesh(
+                    new THREE.SphereGeometry(data.size, 32, 32),
+                    new THREE.MeshPhongMaterial({color: data.color})
+                );
+                
+                const orbitPoints = [];
+                for (let i = 0; i <= 64; i++) {
+                    const angle = (i / 64) * Math.PI * 2;
+                    orbitPoints.push(Math.cos(angle) * data.distance, 0, Math.sin(angle) * data.distance);
                 }
+                const orbitGeometry = new THREE.BufferGeometry();
+                orbitGeometry.setAttribute('position', new THREE.Float32BufferAttribute(orbitPoints, 3));
+                scene.add(new THREE.Line(orbitGeometry, new THREE.LineBasicMaterial({color: 0x444444, transparent: true, opacity: 0.3})));
+                
+                const planetContainer = new THREE.Object3D();
+                planetContainer.add(planet);
+                scene.add(planetContainer);
+                
+                if (data.name === 'Saturn') {
+                    const ring = new THREE.Mesh(
+                        new THREE.RingGeometry(data.size * 1.5, data.size * 2.5, 64),
+                        new THREE.MeshBasicMaterial({color: 0xD2B48C, side: THREE.DoubleSide, transparent: true, opacity: 0.6})
+                    );
+                    ring.rotation.x = Math.PI / 2;
+                    planet.add(ring);
+                }
+                
+                planet.userData = {
+                    name: data.name, distance: data.distance, orbitSpeed: data.orbitSpeed,
+                    rotationSpeed: data.rotationSpeed, angle: Math.random() * Math.PI * 2,
+                    container: planetContainer, moons: [], index: index, explore3dUrl: data.explore3dUrl
+                };
+                
+                planets.push(planet);
+                
+                data.moons.forEach(moonData => {
+                    const moon = new THREE.Mesh(
+                        new THREE.SphereGeometry(moonData.size, 16, 16),
+                        new THREE.MeshPhongMaterial({color: moonData.color})
+                    );
+                    moon.userData = {distance: moonData.distance, speed: moonData.speed, angle: 0};
+                    planet.add(moon);
+                    planet.userData.moons.push(moon);
+                    moons.push(moon);
+                });
             });
         }
-
-        function drawPlanet(planet, centerX, centerY) {
-            if (planet.distance === 0) {
-                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, planet.size);
-                gradient.addColorStop(0, planet.color);
-                gradient.addColorStop(0.5, '#FF8C00');
-                gradient.addColorStop(1, 'rgba(253, 184, 19, 0.1)');
+        
+        function createPlanetIcons() {
+            const iconsContainer = document.getElementById('planet-icons');
+            planets.forEach((planet, index) => {
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'planet-icon';
                 
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, planet.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.shadowBlur = 30;
-                ctx.shadowColor = planet.color;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, planet.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            } else {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, planet.distance, 0, Math.PI * 2);
-                ctx.stroke();
-
-                const x = centerX + Math.cos(planet.angle) * planet.distance;
-                const y = centerY + Math.sin(planet.angle) * planet.distance;
-
-                const gradient = ctx.createRadialGradient(x, y, 0, x, y, planet.size);
-                gradient.addColorStop(0, planet.color);
-                gradient.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+                const label = document.createElement('div');
+                label.className = 'planet-label';
+                label.textContent = planet.userData.name;
+                iconDiv.appendChild(label);
                 
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(x, y, planet.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                if (planet.name === 'Saturn') {
-                    ctx.strokeStyle = 'rgba(250, 213, 165, 0.5)';
-                    ctx.lineWidth = 3;
-                    ctx.beginPath();
-                    ctx.ellipse(x, y, planet.size * 1.8, planet.size * 0.4, 0, 0, Math.PI * 2);
-                    ctx.stroke();
+                const iconScene = new THREE.Scene();
+                const iconCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+                iconCamera.position.set(0, 0, 3);
+                
+                const iconCanvas = document.createElement('canvas');
+                iconCanvas.width = iconCanvas.height = 120;
+                const iconRenderer = new THREE.WebGLRenderer({canvas: iconCanvas, alpha: true, antialias: true});
+                iconRenderer.setSize(120, 120);
+                
+                const iconLight = new THREE.PointLight(0xFFFFFF, 1, 100);
+                iconLight.position.set(5, 5, 5);
+                iconScene.add(iconLight);
+                
+                const iconAmbient = new THREE.AmbientLight(0x404040);
+                iconScene.add(iconAmbient);
+                
+                const miniPlanet = new THREE.Mesh(
+                    new THREE.SphereGeometry(1, 32, 32),
+                    new THREE.MeshPhongMaterial({color: planetData[index].color})
+                );
+                iconScene.add(miniPlanet);
+                
+                if (planet.userData.name === 'Saturn') {
+                    const ring = new THREE.Mesh(
+                        new THREE.RingGeometry(1.5, 2.5, 32),
+                        new THREE.MeshBasicMaterial({color: 0xD2B48C, side: THREE.DoubleSide, transparent: true, opacity: 0.6})
+                    );
+                    ring.rotation.x = Math.PI / 2.5;
+                    miniPlanet.add(ring);
                 }
-
-                planet.angle += planet.speed;
+                
+                iconDiv.appendChild(iconCanvas);
+                iconsContainer.appendChild(iconDiv);
+                
+                iconScenes.push(iconScene);
+                iconCameras.push(iconCamera);
+                iconRenderers.push(iconRenderer);
+                iconPlanets.push(miniPlanet);
+                
+                iconDiv.addEventListener('click', () => focusOnPlanet(planet));
+            });
+        }
+        
+        function setupControls() {
+            const c = {mouseDown: false, mouseButton: -1, mouseX: 0, mouseY: 0};
+            
+            renderer.domElement.addEventListener('mousedown', (e) => {
+                c.mouseDown = true; c.mouseButton = e.button; c.mouseX = e.clientX; c.mouseY = e.clientY;
+            });
+            renderer.domElement.addEventListener('mouseup', () => c.mouseDown = false);
+            renderer.domElement.addEventListener('mousemove', (e) => {
+                if (c.mouseDown && !isAnimating) {
+                    const dx = e.clientX - c.mouseX, dy = e.clientY - c.mouseY;
+                    if (c.mouseButton === 0) {
+                        const r = Math.sqrt(camera.position.x ** 2 + camera.position.z ** 2);
+                        const a = Math.atan2(camera.position.z, camera.position.x) - dx * 0.005;
+                        camera.position.x = r * Math.cos(a);
+                        camera.position.z = r * Math.sin(a);
+                        camera.position.y -= dy * 0.1;
+                        camera.lookAt(0, 0, 0);
+                    }
+                    c.mouseX = e.clientX; c.mouseY = e.clientY;
+                }
+            });
+            renderer.domElement.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                if (!isAnimating) {
+                    const dir = new THREE.Vector3();
+                    camera.getWorldDirection(dir);
+                    camera.position.addScaledVector(dir, -e.deltaY * 0.1);
+                }
+            });
+            renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
+        }
+        
+        function setupChatSystem() {
+            const modal = document.getElementById('chat-modal');
+            const overlay = document.getElementById('chat-overlay');
+            const messages = document.getElementById('chat-messages');
+            
+            function addMsg(text, isUser) {
+                const msg = document.createElement('div');
+                msg.className = 'message ' + (isUser ? 'user-message' : 'ai-message');
+                msg.textContent = text;
+                messages.appendChild(msg);
+                messages.scrollTop = messages.scrollHeight;
+            }
+            
+            function openChat() {
+                modal.style.display = 'block';
+                overlay.style.display = 'block';
+                if (!messages.children.length) addMsg('Hello! Ask me about the planets!', false);
+            }
+            
+            function closeChat() {
+                modal.style.display = 'none';
+                overlay.style.display = 'none';
+            }
+            
+            function send() {
+                const input = document.getElementById('chat-input');
+                const text = input.value.trim();
+                if (!text) return;
+                addMsg(text, true);
+                input.value = '';
+                
+                setTimeout(() => {
+                    let response = '';
+                    const lower = text.toLowerCase();
+                    for (const [name, info] of Object.entries(planetInfo)) {
+                        if (lower.includes(name.toLowerCase())) { response = info; break; }
+                    }
+                    if (!response) {
+                        response = lower.includes('solar') || lower.includes('planet') 
+                            ? 'Our solar system has 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune!'
+                            : 'Ask me about any planet!';
+                    }
+                    addMsg(response, false);
+                }, 500);
+            }
+            
+            document.getElementById('chat-ai-btn').addEventListener('click', openChat);
+            overlay.addEventListener('click', closeChat);
+            document.getElementById('chat-close').addEventListener('click', closeChat);
+            document.getElementById('chat-send').addEventListener('click', send);
+            document.getElementById('chat-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') send();
+            });
+        }
+        
+        function focusOnPlanet(planet) {
+            if (isAnimating) return;
+            isAnimating = true;
+            rotationsPaused = true;
+            selectedPlanet = planet;
+            
+            document.getElementById('current-planet').textContent = `Viewing: ${planet.userData.name}`;
+            document.getElementById('zoom-out-btn').style.display = 'block';
+            document.getElementById('explore-3d-btn').style.display = 'block';
+            
+            document.querySelectorAll('.planet-icon').forEach((icon, idx) => {
+                icon.classList.toggle('active', idx === planet.userData.index);
+            });
+            
+            const worldPos = new THREE.Vector3();
+            planet.getWorldPosition(worldPos);
+            const startPos = camera.position.clone();
+            const endPos = new THREE.Vector3(
+                worldPos.x + planet.geometry.parameters.radius * 3,
+                worldPos.y + planet.geometry.parameters.radius * 2,
+                worldPos.z + planet.geometry.parameters.radius * 3
+            );
+            
+            const startTime = Date.now();
+            function anim() {
+                const t = Math.min((Date.now() - startTime) / 2000, 1);
+                const ease = 1 - Math.pow(1 - t, 3);
+                camera.position.lerpVectors(startPos, endPos, ease);
+                planet.getWorldPosition(worldPos);
+                camera.lookAt(worldPos);
+                if (t < 1) requestAnimationFrame(anim);
+                else isAnimating = false;
+            }
+            anim();
+        }
+        
+        function zoomOut() {
+            if (isAnimating) return;
+            isAnimating = true;
+            rotationsPaused = false;
+            
+            document.getElementById('current-planet').textContent = '';
+            document.getElementById('zoom-out-btn').style.display = 'none';
+            document.getElementById('explore-3d-btn').style.display = 'none';
+            document.querySelectorAll('.planet-icon').forEach(i => i.classList.remove('active'));
+            
+            const startPos = camera.position.clone();
+            const endPos = new THREE.Vector3(0, 30, 60);
+            const startTime = Date.now();
+            
+            function anim() {
+                const t = Math.min((Date.now() - startTime) / 2000, 1);
+                camera.position.lerpVectors(startPos, endPos, 1 - Math.pow(1 - t, 3));
+                camera.lookAt(0, 0, 0);
+                if (t < 1) requestAnimationFrame(anim);
+                else { isAnimating = false; selectedPlanet = null; }
+            }
+            anim();
+        }
+        
+        function explore3D() {
+            if (selectedPlanet && selectedPlanet.userData.explore3dUrl) {
+                window.open(selectedPlanet.userData.explore3dUrl, 'parent');
             }
         }
-
+        
+        function onMouseClick(e) {
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const hits = raycaster.intersectObjects(planets);
+            if (hits.length && hits[0].object.userData.name) focusOnPlanet(hits[0].object);
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
         function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            drawStars();
-
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-
-            planets.forEach(planet => {
-                drawPlanet(planet, centerX, centerY);
-            });
-
             requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        function scrollToSection(id) {
-            const element = document.getElementById(id);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
+            
+            if (!rotationsPaused) sun.rotation.y += 0.001;
+            
+            planets.forEach(p => {
+                const d = p.userData;
+                if (!rotationsPaused) {
+                    d.angle += d.orbitSpeed;
+                    d.container.position.set(Math.cos(d.angle) * d.distance, 0, Math.sin(d.angle) * d.distance);
+                    p.rotation.y += d.rotationSpeed;
+                    d.moons.forEach(m => {
+                        m.userData.angle += m.userData.speed;
+                        m.position.set(Math.cos(m.userData.angle) * m.userData.distance, 0, Math.sin(m.userData.angle) * m.userData.distance);
+                    });
+                }
+                p.position.set(0, 0, 0);
+            });
+            
+            iconPlanets.forEach((ip, i) => {
+                ip.rotation.y += 0.02;
+                iconRenderers[i].render(iconScenes[i], iconCameras[i]);
+            });
+            
+            if (selectedPlanet && !isAnimating) {
+                const wp = new THREE.Vector3();
+                selectedPlanet.getWorldPosition(wp);
+                camera.lookAt(wp);
             }
+            
+            renderer.render(scene, camera);
         }
+        
+        init();
     </script>
 </body>
 </html>

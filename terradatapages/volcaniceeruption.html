@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shifting Earth: Volcanoes Triggered by Quakes</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #ff4500;
+            --color-secondary: #ffa500;
+            --color-danger: #dc143c;
+            --color-earth: #8b4513;
+            --color-lava: #ff6347;
+            --color-text: #ffffff;
+            --color-bg: #0a0a0a;
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Orbitron', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-text);
+            background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes lava-pulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 20px var(--color-primary), 0 0 40px var(--color-lava);
+            }
+
+            50% {
+                text-shadow: 0 0 30px var(--color-primary), 0 0 60px var(--color-lava), 0 0 80px var(--color-danger);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-3px) rotate(-0.5deg);
+            }
+
+            75% {
+                transform: translateX(3px) rotate(0.5deg);
+            }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 2px 30px rgba(255, 69, 0, 0.4);
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(255, 69, 0, 0.3);
+            height: 70px;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            color: var(--color-primary);
+            animation: lava-pulse 3s ease-in-out infinite;
+            font-weight: 900;
+        }
+
+        .nav-links a {
+            color: var(--color-text);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 80%;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 900;
+        }
+
+        .card {
+            background: rgba(20, 5, 5, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 50px rgba(255, 69, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 69, 0, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 69, 0, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(255, 69, 0, 0.3);
+            border-color: rgba(255, 69, 0, 0.5);
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: lava-pulse 4s ease-in-out infinite;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.6rem;
+            color: var(--color-secondary);
+            text-align: center;
+            font-weight: 300;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 69, 0, 0.15), rgba(255, 165, 0, 0.1));
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid rgba(255, 69, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(255, 69, 0, 0.4);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 69, 0, 0.5);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #ddd;
+            font-weight: 600;
+        }
+
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .visual-frame {
+            background: rgba(15, 5, 5, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid rgba(255, 69, 0, 0.3);
+            transition: all 0.4s ease;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-frame::after {
+            content: '🌋';
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.05;
+            bottom: -20px;
+            right: -20px;
+            pointer-events: none;
+        }
+
+        .visual-frame:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--color-primary);
+            box-shadow: 0 15px 50px rgba(255, 69, 0, 0.4);
+        }
+
+        .visual-frame.danger-zone {
+            border-color: var(--color-danger);
+            animation: danger-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes danger-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 5px 25px rgba(220, 20, 60, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 10px 50px rgba(220, 20, 60, 0.7);
+            }
+        }
+
+        .visual-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #2a0a0a, #1a0505);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 10px 0;
+            border: 2px solid rgba(255, 69, 0, 0.2);
+        }
+
+        .visual-caption {
+            font-weight: 700;
+            color: var(--color-secondary);
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .visual-description {
+            font-size: 0.9rem;
+            color: #bbb;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .impact-card {
+            background: rgba(30, 10, 10, 0.9);
+            border-radius: 15px;
+            padding: 35px;
+            border-left: 5px solid var(--color-primary);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .impact-card:hover {
+            transform: translateX(8px);
+            border-left-color: var(--color-danger);
+            box-shadow: 0 10px 40px rgba(255, 69, 0, 0.3);
+        }
+
+        .impact-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .impact-card h3 {
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+        }
+
+        .key-insight {
+            background: linear-gradient(135deg, var(--color-danger), var(--color-primary));
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            font-weight: 700;
+            text-align: center;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 40px rgba(255, 69, 0, 0.5);
+            line-height: 1.8;
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 500px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid rgba(255, 69, 0, 0.4);
+            box-shadow: 0 0 40px rgba(255, 69, 0, 0.3);
+            background: #000;
+        }
+
+        .ring-of-fire {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(255, 69, 0, 0.2));
+            border: 3px solid var(--color-danger);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .ring-of-fire h3 {
+            color: var(--color-danger);
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 18px 45px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-danger));
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 25px rgba(255, 69, 0, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(255, 69, 0, 0.6);
+            animation: shake 0.3s ease-in-out;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--color-primary), var(--color-danger));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .timeline-content {
+            background: rgba(20, 5, 5, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 69, 0, 0.3);
+            width: 45%;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
+        }
+
+        @media (max-width: 900px) {
+
+            .visual-grid,
+            .impact-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+            }
+
+            .nav-links {
+                margin-top: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-content {
+                width: calc(100% - 60px);
+                margin-left: 60px !important;
+            }
+        }
+
+        .info-box {
+            background: rgba(255, 165, 0, 0.1);
+            border-left: 4px solid var(--color-secondary);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .info-box h4 {
+            color: var(--color-secondary);
+            margin-bottom: 15px;
+            font-family: var(--font-heading);
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="particles-canvas"></canvas>
+
+    <nav class="navbar">
+        <div class="logo">🌋 SHIFTING EARTH</div>
+        <div class="nav-links">
+            <a href="#hero">Home</a>
+            <a href="#overview">Overview</a>
+            <a href="#data">Data Insights</a>
+            <a href="#visuals">Visual Story</a>
+            <a href="#impact">Impact</a>
+            <a href="#safety">Safety</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="section" id="hero">
+            <div class="card">
+                <h1 class="hero-title">🌋 SHIFTING EARTH</h1>
+                <p class="hero-subtitle">Volcanoes Triggered by Earthquakes</p>
+                <p style="text-align: center; font-size: 1.2rem; color: #ccc; max-width: 900px; margin: 0 auto 30px;">
+                    Our planet is constantly in motion. Deep beneath the surface, massive tectonic plates collide,
+                    shift, and reshape Earth's crust. These movements trigger powerful earthquakes that can awaken
+                    nearby volcanoes — creating cascading disasters.
+                </p>
+                <div style="text-align: center;">
+                    <a href="#overview" style="text-decoration: none;">
+                        <button>Explore the Connection →</button>
+                    </a>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">89%</div>
+                        <div class="stat-label">Peak Correlation in Ring of Fire</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">250km</div>
+                        <div class="stat-label">Critical Distance for Eruption Trigger</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">19</div>
+                        <div class="stat-label">Tectonic Regions Analyzed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">75%</div>
+                        <div class="stat-label">Of Eruptions Within Years of Quakes</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="section" id="overview">
+            <h2>🔍 Understanding the Connection</h2>
+            <div class="card">
+                <p style="font-size: 1.2rem; margin-bottom: 25px;">
+                    When a major earthquake strikes, it doesn't just shake the ground — it can destabilize magma
+                    chambers deep underground. The sudden change in pressure and stress can trigger volcanic eruptions
+                    within days, months, or even years after the initial quake.
+                </p>
+
+                <div class="visual-grid">
+                    <div class="visual-frame" style="grid-column: 1 / -1;">
+                        <img src="1.jpg" alt="Global map of volcanoes and earthquakes"
+                            style="width: 100%; height: auto; border-radius: 10px; border: 2px solid rgba(255, 69, 0, 0.3);">
+                        <p class="visual-caption" style="margin-top: 15px;">Global Overview: 19 Tectonic Subregions</p>
+                        <p class="visual-description">Red triangles mark active volcanoes, green circles show major
+                            earthquakes (M≥7). Notice the concentration along the Pacific Ring of Fire.</p>
+                    </div>
+                </div>
+
+                <div class="visual-grid" style="margin-top: 30px;">
+                    <div class="visual-frame danger-zone">
+                        <img src="2.jpg" alt="Correlation coefficient map"
+                            style="width: 100%; height: auto; border-radius: 10px;">
+                        <p class="visual-caption" style="margin-top: 15px;">Correlation Strength Map</p>
+                        <p class="visual-description">Red/pink shading shows regions with >0.89 correlation between
+                            earthquakes and eruptions. Green areas have weaker connections (<0.75).< /p>
+                    </div>
+                </div>
+                <div class="visual-grid" style="margin-top: 30px;">
+                    <div class="visual-frame danger-zone">
+                        <img src="3.jpg" alt="Correlation coefficient map"
+                            style="width: 100%; height: auto; border-radius: 10px;">
+                        <p class="visual-caption" style="margin-top: 15px;">Volcanic eruption before earthquake and
+                            after earthquake</p>
+                        <p class="visual-description">This visualization illustrates the spatial relationship between
+                            volcanic eruptions and major earthquakes across active tectonic zones. The red and pink
+                            regions highlight areas with a strong correlation (greater than 0.89), indicating zones
+                            where volcanic activity tends to occur before or after significant seismic events. In
+                            contrast, the green regions represent weaker correlations (below 0.75), suggesting minimal
+                            interaction between tectonic and volcanic processes in those areas.</p>
+                    </div>
+                </div>
+
+                <div class="ring-of-fire">
+                    <h3>🌊 The Pacific Ring of Fire</h3>
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: #ddd;">
+                        The Pacific Ring of Fire — stretching from Japan through Indonesia, the Philippines, Alaska, and
+                        down to Chile — hosts 75% of the world's active volcanoes and 90% of earthquakes. This is where
+                        tectonic plates collide most violently. Regions like <strong>Japan (correlation: 0.89)</strong>,
+                        <strong>Indonesia (0.87)</strong>, and <strong>South America (0.85)</strong> show the strongest
+                        earthquake-volcano connections.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="data">
+            <h2>🛰️ Data Insights from Space</h2>
+            <div class="card">
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                    Using NASA's Terra satellite and global seismic monitoring networks, scientists have tracked
+                    correlations between earthquakes (green circles) and volcanic eruptions (red triangles) across the
+                    globe. The results are striking.
+                </p>
+
+                <div class="visual-grid">
+                    <div class="visual-frame">
+                        <div class="visual-placeholder">📍</div>
+                        <p class="visual-caption">Kamchatka, Russia</p>
+                        <p class="visual-description">Major eruptions within 3 years of M7+ earthquakes</p>
+                    </div>
+                    <div class="visual-frame">
+                        <div class="visual-placeholder">📍</div>
+                        <p class="visual-caption">Chile</p>
+                        <p class="visual-description">Volcanic clusters activated following 2010 M8.8 quake</p>
+                    </div>
+                    <div class="visual-frame">
+                        <div class="visual-placeholder">📍</div>
+                        <p class="visual-caption">Guatemala</p>
+                        <p class="visual-description">Persistent volcanic activity after regional seismic events</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>🔬 Key Scientific Finding</h4>
+                    <p style="color: #ddd; line-height: 1.8;">
+                        Research shows that <strong>eruptions occur more frequently within 250km of earthquake
+                            epicenters</strong>, especially in the first 1-5 years after a major quake. The closer and
+                        sooner, the stronger the correlation. This suggests that seismic stress directly influences
+                        volcanic systems by fracturing rock, increasing pressure in magma chambers, and opening pathways
+                        for molten rock to reach the surface.
+                    </p>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3
+                        style="color: var(--color-secondary); font-family: var(--font-heading); margin-bottom: 20px; text-align: center;">
+                        Time vs. Distance Analysis</h3>
+                    <div class="visual-frame" style="min-height: 200px;">
+                        <div class="visual-placeholder" style="height: 150px;">📈</div>
+                        <p class="visual-description">Eruption timing relative to earthquake distance — more eruptions
+                            occur closer and sooner after quakes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="visuals">
+            <h2>🌏 Visual Story: The Pattern Emerges</h2>
+            <div class="card">
+                <h3
+                    style="color: var(--color-primary); margin-bottom: 20px; font-family: var(--font-heading); font-size: 1.8rem;">
+                    Interactive 3D Visualization</h3>
+                <div class="canvas-container" id="three-scene"></div>
+                <p style="text-align: center; color: #888; margin-top: 15px;">
+                    Red spheres = volcanoes | Green pulses = earthquakes | Watch the cascading effect
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--color-secondary); margin-bottom: 25px; font-family: var(--font-heading);">
+                    Temporal Distribution Patterns</h3>
+                <p style="margin-bottom: 25px; font-size: 1.1rem;">
+                    The data reveals a clear temporal pattern: volcanic eruptions cluster dramatically in the years
+                    immediately following major earthquakes, particularly within 250km.
+                </p>
+
+                <div class="visual-grid">
+                    <div class="visual-frame">
+                        <div class="visual-placeholder">📊</div>
+                        <p class="visual-caption">0-250km Range</p>
+                        <p class="visual-description">Highest eruption frequency within 2-3 years post-quake</p>
+                    </div>
+                    <div class="visual-frame">
+                        <div class="visual-placeholder">📊</div>
+                        <p class="visual-caption">250-500km Range</p>
+                        <p class="visual-description">Moderate correlation, longer time delays</p>
+                    </div>
+                    <div class="visual-frame">
+                        <div class="visual-placeholder">📊</div>
+                        <p class="visual-caption">>500km Range</p>
+                        <p class="visual-description">Weak correlation, random distribution</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="impact">
+            <h2>💥 Why This Matters to You</h2>
+            <div class="card">
+                <p style="font-size: 1.2rem; margin-bottom: 30px; text-align: center;">
+                    Understanding the earthquake-volcano connection isn't just academic — it directly affects millions
+                    of people living near volcanic zones.
+                </p>
+
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <span class="impact-icon">🏘️</span>
+                        <h3>Your Community at Risk</h3>
+                        <p><strong>Over 500 million people live within 100km of active volcanoes.</strong> If you're in
+                            Japan, Indonesia, Philippines, Alaska, Pacific Northwest, Chile, or Central America, you're
+                            in a high-risk zone. When an earthquake strikes, nearby volcanoes become ticking time bombs.
+                        </p>
+                    </div>
+
+                    <div class="impact-card">
+                        <span class="impact-icon">🚨</span>
+                        <h3>Secondary Disasters</h3>
+                        <p><strong>After a major earthquake, volcanic eruption risk increases by 40-60%.</strong> This
+                            means communities must prepare for cascading disasters: first the quake damage, then
+                            potential eruptions bringing lava flows, ash clouds, and toxic gases.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <span class="impact-icon">✈️</span>
+                        <h3>Global Disruption</h3>
+                        <p><strong>Volcanic ash shuts down air travel.</strong> The 2010 Eyjafjallajökull eruption
+                            grounded 100,000 flights, stranding millions. Earthquake-triggered eruptions in the Pacific
+                            Rim could cause even worse disruptions to global transportation and supply chains.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <span class="impact-icon">🌾</span>
+                        <h3>Agricultural Devastation</h3>
+                        <p><strong>Volcanic ash destroys crops and contaminates water supplies.</strong> Communities
+                            near volcanic zones face food security threats and economic collapse. Indonesia's 2018
+                            eruptions displaced 100,000+ people and destroyed livelihoods.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <span class="impact-icon">🏥</span>
+                        <h3>Health Impacts</h3>
+                        <p><strong>Volcanic ash causes respiratory illness, eye damage, and skin irritation.</strong>
+                            Fine ash particles penetrate deep into lungs. Toxic gases like SO₂ and CO₂ can be lethal.
+                            Hospital systems already strained by earthquake injuries face overwhelming demand.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <span class="impact-icon">💰</span>
+                        <h3>Economic Costs</h3>
+                        <p><strong>Cascading disasters cost billions.</strong> Japan's 2011 earthquake cost $235 billion
+                            — add volcanic eruptions and the costs multiply. Infrastructure damage, evacuations,
+                            long-term displacement, and recovery can bankrupt regions.</p>
+                    </div>
+                </div>
+
+                <div class="key-insight">
+                    The connection between earthquakes and volcanoes means that when one disaster strikes, you must
+                    prepare for another. Communities in seismic zones need dual-hazard preparedness plans, early warning
+                    systems, and evacuation routes that account for both shaking ground and erupting mountains.
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="safety">
+            <h2>🛡️ Preparation & Response</h2>
+            <div class="card">
+                <h3
+                    style="color: var(--color-primary); margin-bottom: 25px; font-family: var(--font-heading); font-size: 1.8rem;">
+                    What You Can Do</h3>
+
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <h3>Know Your Risk Zone</h3>
+                        <ul style="color: #ccc; margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                            <li>Check if you live within 100km of an active volcano</li>
+                            <li>Understand your region's earthquake history</li>
+                            <li>Download volcanic activity monitoring apps</li>
+                            <li>Sign up for emergency alerts</li>
+                        </ul>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Emergency Preparedness</h3>
+                        <ul style="color: #ccc; margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                            <li>Keep emergency supplies for 2+ weeks</li>
+                            <li>Stock N95 masks for ash protection</li>
+                            <li>Have multiple evacuation routes planned</li>
+                            <li>Maintain communication devices and chargers</li>
+                        </ul>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>After an Earthquake</h3>
+                        <ul style="color: #ccc; margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                            <li>Monitor volcanic activity for months afterward</li>
+                            <li>Stay alert to seismic swarms (earthquake clusters)</li>
+                            <li>Watch for ground deformation near volcanoes</li>
+                            <li>Be ready to evacuate on short notice</li>
+                        </ul>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Community Action</h3>
+                        <ul style="color: #ccc; margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                            <li>Support volcanic monitoring programs</li>
+                            <li>Participate in community drills</li>
+                            <li>Advocate for better early warning systems</li>
+                            <li>Help educate neighbors about dual hazards</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>🔔 Early Warning Systems</h4>
+                    <p style="color: #ddd; line-height: 1.8;">
+                        Modern monitoring technology can detect pre-eruption signals: increased seismic activity, ground
+                        swelling, gas emissions, and temperature changes. However, <strong>these systems only work if
+                            funded and maintained.</strong> After a major earthquake, monitoring becomes even more
+                        critical as the risk window extends for years.
+                    </p>
+                </div>
+
+                <div
+                    style="background: rgba(255, 69, 0, 0.15); padding: 30px; border-radius: 15px; margin-top: 30px; border: 2px solid var(--color-primary);">
+                    <h3
+                        style="color: var(--color-primary); margin-bottom: 20px; font-family: var(--font-heading); text-align: center;">
+                        Research Saves Lives</h3>
+                    <p style="font-size: 1.1rem; line-height: 1.8; text-align: center; color: #ddd;">
+                        This research, combining satellite data from NASA's Terra mission with global seismic records,
+                        helps predict secondary volcanic hazards after earthquakes. By understanding the spatial and
+                        temporal patterns, emergency managers can issue timely warnings and implement evacuation plans
+                        before eruptions occur. <strong>Better data = better preparedness = saved lives.</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>📚 The Science Explained</h2>
+            <div class="card">
+                <h3 style="color: var(--color-secondary); margin-bottom: 25px; font-family: var(--font-heading);">How
+                    Earthquakes Trigger Eruptions</h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 style="color: var(--color-primary); margin-bottom: 10px;">⚡ Step 1: The Earthquake</h4>
+                            <p style="color: #ccc;">A major earthquake releases enormous energy, causing massive ground
+                                displacement and stress changes in the surrounding crust.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 style="color: var(--color-primary); margin-bottom: 10px;">🌋 Step 2: Pressure Changes
+                            </h4>
+                            <p style="color: #ccc;">Seismic waves propagate through rock, altering pressure in nearby
+                                magma chambers. This can squeeze magma upward or fracture the chamber walls.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 style="color: var(--color-primary); margin-bottom: 10px;">💥 Step 3: Pathway Formation
+                            </h4>
+                            <p style="color: #ccc;">Rock fractures create new pathways for magma to rise.
+                                Earthquake-induced cracks can extend from deep magma reservoirs to the surface.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 style="color: var(--color-primary); margin-bottom: 10px;">🔥 Step 4: Eruption</h4>
+                            <p style="color: #ccc;">Within days to years, magma reaches the surface through newly opened
+                                pathways, triggering volcanic eruptions — often more explosive due to rapid pressure
+                                release.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <h4 style="color: var(--color-secondary); margin-bottom: 15px; font-family: var(--font-heading);">
+                        Real-World Examples</h4>
+                    <p style="margin-bottom: 20px; line-height: 1.8;">
+                        <strong>Chile, 1960:</strong> The M9.5 Valdivia earthquake was followed by eruptions of
+                        Puyehue-Cordón Caulle volcano within 38 hours — one of the clearest documented cases of
+                        earthquake-triggered volcanism.
+                    </p>
+                    <p style="margin-bottom: 20px; line-height: 1.8;">
+                        <strong>Japan, 2011:</strong> After the M9.1 Tōhoku earthquake, Mount Fuji showed increased
+                        seismic activity and ground deformation, raising concerns about potential eruption.
+                    </p>
+                    <p style="line-height: 1.8;">
+                        <strong>Indonesia, 2018:</strong> The Lombok earthquake sequence was followed by increased
+                        activity at Mount Agung and Mount Rinjani, forcing mass evacuations.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🌍 Global Implications</h2>
+            <div class="card">
+                <p style="font-size: 1.2rem; margin-bottom: 30px;">
+                    The earthquake-volcano connection has profound implications for disaster management, climate
+                    science, and human civilization.
+                </p>
+
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <span class="impact-icon">🌡️</span>
+                        <h3>Climate Impact</h3>
+                        <p>Major volcanic eruptions inject millions of tons of sulfur dioxide into the stratosphere,
+                            cooling global temperatures. The 1991 Pinatubo eruption dropped temperatures by 0.5°C for
+                            two years. Earthquake-triggered eruptions could create sudden climate shifts.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <span class="impact-icon">🏙️</span>
+                        <h3>Megacity Vulnerability</h3>
+                        <p>Tokyo (35M people), Jakarta (30M), Manila (24M), and Mexico City (22M) sit near active
+                            volcanic zones. A major earthquake followed by eruption could create humanitarian crises
+                            affecting tens of millions simultaneously.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <span class="impact-icon">🔬</span>
+                        <h3>Scientific Advancement</h3>
+                        <p>Understanding this connection improves hazard forecasting. Terra satellite data combined with
+                            ground-based seismic networks provides unprecedented insight into Earth's dynamic processes,
+                            enabling better risk models.</p>
+                    </div>
+                </div>
+
+                <div class="key-insight">
+                    Climate change may intensify this hazard. Melting glaciers reduce pressure on volcanic systems,
+                    potentially increasing eruption frequency. Combined with continued tectonic activity, we face a
+                    growing challenge requiring international cooperation and sustained scientific monitoring.
+                </div>
+            </div>
+        </section>
+
+        <footer style="text-align: center; padding: 60px 0; font-size: 0.95rem; color: #666;">
+            <p style="margin-bottom: 10px; font-size: 1.1rem; color: var(--color-secondary);">Data Sources: NASA Terra
+                (MODIS), USGS Earthquake Catalog, Global Volcanism Program</p>
+            <p style="margin-bottom: 10px;">&copy; 2025 Shifting Earth Initiative | Understanding Our Dynamic Planet</p>
+            <p style="margin-top: 20px; color: #888;">Research-driven visualization for public awareness and disaster
+                preparedness</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const particlesCanvas = document.getElementById('particles-canvas');
+        const pCtx = particlesCanvas.getContext('2d');
+
+        particlesCanvas.width = window.innerWidth;
+        particlesCanvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 200;
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * particlesCanvas.width,
+                y: Math.random() * particlesCanvas.height,
+                radius: Math.random() * 3 + 1,
+                speed: Math.random() * 0.5 + 0.2,
+                opacity: Math.random() * 0.5 + 0.3,
+                color: Math.random() > 0.7 ? '#ff4500' : '#ffffff'
+            });
+        }
+
+        function animateParticles() {
+            pCtx.fillStyle = 'rgba(10, 0, 0, 0.05)';
+            pCtx.fillRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+
+            particles.forEach(p => {
+                p.y += p.speed;
+
+                if (p.y > particlesCanvas.height) {
+                    p.y = 0;
+                    p.x = Math.random() * particlesCanvas.width;
+                }
+
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                pCtx.fillStyle = `${p.color}${Math.floor(p.opacity * 255).toString(16).padStart(2, '0')}`;
+                pCtx.fill();
+
+                if (Math.random() > 0.99) {
+                    pCtx.shadowBlur = 10;
+                    pCtx.shadowColor = p.color;
+                }
+                pCtx.shadowBlur = 0;
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            particlesCanvas.width = window.innerWidth;
+            particlesCanvas.height = window.innerHeight;
+        });
+
+        const sceneContainer = document.getElementById('three-scene');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        scene.fog = new THREE.Fog(0x0a0000, 20, 60);
+
+        const camera = new THREE.PerspectiveCamera(
+            50,
+            sceneContainer.clientWidth / sceneContainer.clientHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(25, 20, 25);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+        sceneContainer.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambientLight);
+
+        const volcanicLight = new THREE.PointLight(0xff4500, 2, 100);
+        volcanicLight.position.set(0, 10, 0);
+        scene.add(volcanicLight);
+
+        const groundGeo = new THREE.PlaneGeometry(60, 60);
+        const groundMat = new THREE.MeshStandardMaterial({
+            color: 0x1a0a05,
+            roughness: 0.9
+        });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        scene.add(ground);
+
+        const volcanoes = [];
+        const volcanoPositions = [
+            [0, 0, 0],
+            [-15, 0, -10],
+            [12, 0, 8],
+            [-8, 0, 15],
+            [18, 0, -12]
+        ];
+
+        volcanoPositions.forEach(pos => {
+            const volcanoGroup = new THREE.Group();
+
+            const coneGeo = new THREE.ConeGeometry(2, 5, 8);
+            const coneMat = new THREE.MeshStandardMaterial({
+                color: 0x4a2511,
+                roughness: 0.8
+            });
+            const cone = new THREE.Mesh(coneGeo, coneMat);
+            cone.position.y = 2.5;
+            volcanoGroup.add(cone);
+
+            const craterGeo = new THREE.CylinderGeometry(0.8, 1.2, 0.5, 8);
+            const craterMat = new THREE.MeshStandardMaterial({ color: 0x1a0a05 });
+            const crater = new THREE.Mesh(craterGeo, craterMat);
+            crater.position.y = 5;
+            volcanoGroup.add(crater);
+
+            const lavaLight = new THREE.PointLight(0xff4500, 1.5, 15);
+            lavaLight.position.y = 5;
+            volcanoGroup.add(lavaLight);
+
+            volcanoGroup.position.set(...pos);
+            volcanoGroup.userData = {
+                active: false,
+                timer: 0,
+                light: lavaLight
+            };
+            scene.add(volcanoGroup);
+            volcanoes.push(volcanoGroup);
+        });
+
+        const earthquakes = [];
+        function createEarthquake(position) {
+            const quakeGeo = new THREE.SphereGeometry(0.5, 16, 16);
+            const quakeMat = new THREE.MeshBasicMaterial({
+                color: 0x00ff00,
+                transparent: true,
+                opacity: 0.8
+            });
+            const quake = new THREE.Mesh(quakeGeo, quakeMat);
+            quake.position.set(position[0], 0.5, position[2]);
+
+            const pulseGeo = new THREE.RingGeometry(1, 1.5, 32);
+            const pulseMat = new THREE.MeshBasicMaterial({
+                color: 0x00ff00,
+                transparent: true,
+                opacity: 0.6,
+                side: THREE.DoubleSide
+            });
+            const pulse = new THREE.Mesh(pulseGeo, pulseMat);
+            pulse.rotation.x = -Math.PI / 2;
+            pulse.position.y = 0.1;
+            quake.add(pulse);
+
+            quake.userData = {
+                life: 100,
+                pulse: pulse,
+                scale: 0
+            };
+
+            scene.add(quake);
+            earthquakes.push(quake);
+
+            volcanoes.forEach(volcano => {
+                const distance = Math.sqrt(
+                    Math.pow(volcano.position.x - position[0], 2) +
+                    Math.pow(volcano.position.z - position[2], 2)
+                );
+
+                if (distance < 20 && Math.random() > 0.3) {
+                    volcano.userData.active = true;
+                    volcano.userData.timer = Math.random() * 100 + 50;
+                }
+            });
+        }
+
+        const lavaParticles = [];
+        function createLavaParticle(volcano) {
+            const particleGeo = new THREE.SphereGeometry(0.15, 6, 6);
+            const particleMat = new THREE.MeshBasicMaterial({
+                color: new THREE.Color().setHSL(Math.random() * 0.1, 1, 0.5),
+                transparent: true,
+                opacity: 0.9
+            });
+            const particle = new THREE.Mesh(particleGeo, particleMat);
+
+            particle.position.copy(volcano.position);
+            particle.position.y = 5;
+
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 0.3 + 0.2;
+            particle.userData = {
+                velocity: new THREE.Vector3(
+                    Math.cos(angle) * speed,
+                    Math.random() * 0.4 + 0.3,
+                    Math.sin(angle) * speed
+                ),
+                life: 100
+            };
+
+            scene.add(particle);
+            lavaParticles.push(particle);
+        }
+
+        let time = 0;
+        let earthquakeTimer = 0;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+            earthquakeTimer++;
+
+            if (earthquakeTimer > 150) {
+                const randomPos = [
+                    (Math.random() - 0.5) * 30,
+                    0,
+                    (Math.random() - 0.5) * 30
+                ];
+                createEarthquake(randomPos);
+                earthquakeTimer = 0;
+            }
+
+            earthquakes.forEach((quake, index) => {
+                quake.userData.life--;
+                quake.userData.scale += 0.1;
+
+                quake.userData.pulse.scale.set(
+                    quake.userData.scale,
+                    quake.userData.scale,
+                    1
+                );
+                quake.userData.pulse.material.opacity = quake.userData.life / 100 * 0.6;
+
+                if (quake.userData.life <= 0) {
+                    scene.remove(quake);
+                    earthquakes.splice(index, 1);
+                }
+            });
+
+            volcanoes.forEach(volcano => {
+                if (volcano.userData.active) {
+                    volcano.userData.timer--;
+
+                    volcano.userData.light.intensity = 1.5 + Math.sin(time * 5) * 0.5;
+
+                    if (Math.random() > 0.7) {
+                        createLavaParticle(volcano);
+                    }
+
+                    if (volcano.userData.timer <= 0) {
+                        volcano.userData.active = false;
+                        volcano.userData.light.intensity = 0.5;
+                    }
+                }
+            });
+
+            lavaParticles.forEach((particle, index) => {
+                particle.position.add(particle.userData.velocity);
+                particle.userData.velocity.y -= 0.01;
+                particle.userData.life--;
+
+                particle.material.opacity = particle.userData.life / 100 * 0.9;
+
+                if (particle.userData.life <= 0 || particle.position.y < 0.5) {
+                    scene.remove(particle);
+                    lavaParticles.splice(index, 1);
+                }
+            });
+
+            volcanicLight.intensity = 1.5 + Math.sin(time * 2) * 0.5;
+
+            camera.position.x = 25 + Math.sin(time * 0.1) * 5;
+            camera.position.z = 25 + Math.cos(time * 0.1) * 5;
+            camera.lookAt(0, 3, 0);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            if (sceneContainer.clientWidth && sceneContainer.clientHeight) {
+                camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

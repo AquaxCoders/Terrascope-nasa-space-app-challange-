@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tides of Change: Flood Hazards & Dam Impact</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0ea5e9;
+            --color-secondary: #06b6d4;
+            --color-accent: #22d3ee;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+            --color-text: #ffffff;
+            --color-bg: #000000;
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Orbitron', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        #waterfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes wave-pulse {
+            0%, 100% {
+                text-shadow: 0 0 10px var(--color-primary);
+            }
+            50% {
+                text-shadow: 0 0 20px var(--color-primary), 0 0 30px var(--color-secondary);
+            }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(14, 165, 233, 0.3);
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            height: 70px;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            color: var(--color-primary);
+            animation: wave-pulse 3s ease-in-out infinite;
+        }
+
+        .nav-links a {
+            color: var(--color-text);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 70%;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .card {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(14, 165, 233, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(14, 165, 233, 0.25);
+            border-color: rgba(14, 165, 233, 0.4);
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 500px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(14, 165, 233, 0.3);
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
+            background: #000;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(14, 165, 233, 0.3);
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .comparison-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .gif-frame {
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            border-radius: 15px;
+            border: 2px solid rgba(14, 165, 233, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .gif-frame:hover {
+            transform: translateY(-10px);
+            border-color: rgba(14, 165, 233, 0.6);
+            box-shadow: 0 10px 40px rgba(14, 165, 233, 0.3);
+        }
+
+        .gif-frame.current-state {
+            border-color: var(--color-danger);
+            animation: danger-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes danger-pulse {
+            0%, 100% {
+                box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
+            }
+            50% {
+                box-shadow: 0 10px 40px rgba(239, 68, 68, 0.7);
+            }
+        }
+
+        .gif-frame img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .key-insight {
+            background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(14, 165, 233, 0.4);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: var(--color-primary);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: var(--color-danger);
+            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .impact-card {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid var(--color-primary);
+            transition: all 0.3s ease;
+        }
+
+        .impact-card:hover {
+            transform: translateX(5px);
+            border-left-color: var(--color-secondary);
+        }
+
+        .impact-card h3 {
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            font-family: var(--font-heading);
+        }
+
+        .impact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--color-primary);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.1));
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+
+        .community-story {
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 5px solid var(--color-accent);
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .story-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .story-quote {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .story-source {
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+
+        .flood-visual {
+            background: linear-gradient(to top, #1e3a8a 0%, #0ea5e9 30%, #22d3ee 60%, #e0f2fe 100%);
+            height: 60px;
+            border-radius: 10px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flood-label {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .flood-label.start {
+            left: 10px;
+            color: #fff;
+        }
+
+        .flood-label.end {
+            right: 10px;
+            color: #000;
+        }
+
+        @media (max-width: 900px) {
+            .comparison-grid, .comparison-grid-2, .impact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+            }
+
+            .nav-links {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="waterfield"></canvas>
+
+    <nav class="navbar">
+        <div class="logo">TIDES OF CHANGE</div>
+        <div class="nav-links">
+            <a href="../planetspages/earth.html">Home</a>
+            <a href="#hazards">Flood Hazards</a>
+            <a href="#dams">Dam Impact</a>
+            <a href="#science">Science</a>
+            <a href="#impact">Impact</a>
+            <a href="#solutions">Solutions</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <header id="home" class="section">
+            <div class="card">
+                <h1 class="text-center" style="font-family: var(--font-heading); font-size: 3.5rem; color: var(--color-primary); margin-bottom: 20px;">
+                    TIDES OF CHANGE
+                </h1>
+                <h2 class="text-center" style="font-size: 1.5rem; color: #aaa; font-weight: 300; margin-bottom: 30px;">
+                    Flood Hazards & Dam Impact: When Water Rises
+                </h2>
+
+                <div class="flood-visual">
+                    <div class="flood-label start">DRY LAND</div>
+                    <div class="flood-label end">FLOODED</div>
+                </div>
+
+                <p class="text-center" style="font-size: 1.2rem; color: #ccc; max-width: 800px; margin: 0 auto 30px;">
+                    Water is life—but too much water in the wrong place is disaster. From devastating floods that swallow communities overnight to massive dams that reshape entire ecosystems, humanity's relationship with water is at a breaking point. Climate change is intensifying floods, while our infrastructure choices create new vulnerabilities.
+                </p>
+                <div class="text-center">
+                    <a href="#hazards" style="text-decoration: none;">
+                        <button>See the Rising Waters →</button>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <section id="hazards" class="section">
+            <h2>25 YEARS OF FLOOD HAZARD EVOLUTION</h2>
+            <div class="card">
+                <h3 style="color: var(--color-primary); margin-bottom: 20px; text-align: center;">Satellite Analysis: 2000-2025</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                    These satellite visualizations reveal how flood-prone areas have expanded dramatically over 25 years. What were once occasional flood zones are now regular disaster areas. Climate change drives more intense rainfall, while urban development eliminates natural flood buffers like wetlands and forests. The red zones show where water accumulates during heavy rains—and where communities face the greatest danger.
+                </p>
+
+                <div class="comparison-grid">
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: #22d3ee; margin-bottom: 15px;">2000 Baseline</p>
+                        <img src="floodhazard2000.gif" alt="Flood Hazard 2000" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Limited high-risk zones</p>
+                    </div>
+
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: #f59e0b; margin-bottom: 15px;">2010 Expansion</p>
+                        <img src="floodhazard2017.gif" alt="Flood Hazard 2010" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Growing vulnerability</p>
+                    </div>
+
+                    <div class="gif-frame current-state">
+                        <p style="font-weight: bold; color: var(--color-danger); margin-bottom: 15px;">2025 Crisis</p>
+                        <img src="floodhazard2025.gif" alt="Flood Hazard 2025" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Widespread danger zones</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="stat-number">3x</div>
+                        <div class="stat-label">Increase in flood frequency since 2000</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">1.8B</div>
+                        <div class="stat-label">People living in flood-prone areas globally</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">40%</div>
+                        <div class="stat-label">More intense rainfall events due to climate change</div>
+                    </div>
+                </div>
+
+                <div class="key-insight" style="margin-top: 40px;">
+                    CRITICAL INSIGHT: A warmer atmosphere holds 7% more moisture per degree Celsius of warming. This means heavier downpours, faster flooding, and more devastating impacts on unprepared communities.
+                </div>
+            </div>
+        </section>
+
+        <section id="dams" class="section">
+            <h2>DAM IMPACT: TRANSFORMING RIVER SYSTEMS</h2>
+            <div class="card">
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                    Dams fundamentally alter the relationship between rivers and landscapes. These before-and-after comparisons show how large dam projects transform entire regions—creating massive reservoirs, flooding valleys, displacing communities, and changing downstream water flows forever. While dams provide hydroelectric power and water storage, they come with profound ecological and social costs.
+                </p>
+
+                <div class="comparison-grid-2">
+                    <div class="gif-frame">
+                        <p style="font-weight: bold; color: #22d3ee; margin-bottom: 15px;">Before Dam Construction</p>
+                        <img src="WhatsApp Image 2025-10-05 at 06.21.57_94aca310.jpg" alt="Before Dam" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Natural river flow & ecosystem</p>
+                    </div>
+
+                    <div class="gif-frame current-state">
+                        <p style="font-weight: bold; color: var(--color-danger); margin-bottom: 15px;">After Dam Construction</p>
+                        <img src="WhatsApp Image 2025-10-05 at 06.21.44_6170d18c.jpg" alt="After Dam" />
+                        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">Reservoir created, landscape transformed</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="stat-number">58,000+</div>
+                        <div class="stat-label">Large dams worldwide</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">80M</div>
+                        <div class="stat-label">People displaced by dams globally</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">48%</div>
+                        <div class="stat-label">Of global rivers affected by dams</div>
+                    </div>
+                </div>
+
+                <div class="key-insight" style="margin-top: 40px; background: linear-gradient(90deg, #ef4444, #f59e0b);">
+                    PARADOX: Dams built to control floods can create catastrophic flood risks if they fail or require emergency releases during extreme weather events.
+                </div>
+            </div>
+        </section>
+
+        <section id="visualization" class="section">
+            <h2>FLOOD RISK MANAGEMENT VISUALIZATION</h2>
+            <div class="card">
+                <h3 style="color: var(--color-primary); margin-bottom: 20px; text-align: center;">Understanding Modern Flood Control Systems</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                    This visualization demonstrates how advanced flood risk management systems work—combining real-time monitoring, predictive modeling, and coordinated infrastructure to protect communities. From early warning systems to controlled water releases, modern technology helps us respond faster—but cannot eliminate the fundamental risks posed by extreme weather and poor planning.
+                </p>
+
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/cCZWkMXJwQE" 
+                        title="Flood Risk Management System" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+
+                <p style="font-style: italic; margin-top: 20px; color: #aaa; text-align: center;">
+                    Even the most sophisticated flood management systems can be overwhelmed by unprecedented rainfall intensities—which are becoming more common as the climate changes.
+                </p>
+            </div>
+        </section>
+
+        <section id="science" class="section">
+            <h2>THE SCIENCE OF FLOODING</h2>
+            <div class="card">
+                <h3 style="color: var(--color-primary); margin-bottom: 20px;">Understanding the Flood Crisis</h3>
+                
+                <p style="margin-bottom: 20px;">Flooding is the most common and costly natural disaster globally. Climate change is making it worse, while human development choices multiply our vulnerability. The science reveals several converging crises:</p>
+
+                <h4 style="color: var(--color-accent); margin-top: 30px; margin-bottom: 15px;">Climate Amplification</h4>
+                <p>A warming planet doesn't just mean hotter temperatures—it fundamentally changes the water cycle:</p>
+                <ul style="color: #ccc; margin-left: 20px; margin-top: 15px; line-height: 2;">
+                    <li><strong style="color: #fff;">More atmospheric moisture:</strong> Each degree of warming increases atmospheric water vapor by 7%</li>
+                    <li><strong style="color: #fff;">Intense precipitation:</strong> Rain falls harder and faster, overwhelming drainage systems</li>
+                    <li><strong style="color: #fff;">Slower storm systems:</strong> Weather patterns stall, dumping water in one area for days</li>
+                    <li><strong style="color: #fff;">Sea level rise:</strong> Higher baseline ocean levels mean storm surges reach farther inland</li>
+                </ul>
+
+                <h4 style="color: var(--color-accent); margin-top: 30px; margin-bottom: 15px;">Urban Development Crisis</h4>
+                <p>How we build cities makes flooding worse:</p>
+                <ul style="color: #ccc; margin-left: 20px; margin-top: 15px; line-height: 2;">
+                    <li><strong style="color: #fff;">Impervious surfaces:</strong> Concrete and asphalt prevent water absorption, creating rapid runoff</li>
+                    <li><strong style="color: #fff;">Lost wetlands:</strong> Natural flood buffers destroyed for development</li>
+                    <li><strong style="color: #fff;">River modification:</strong> Channelized rivers flow faster, causing downstream flooding</li>
+                    <li><strong style="color: #fff;">Building in floodplains:</strong> Development in high-risk areas increases casualties and damages</li>
+                </ul>
+
+                <h4 style="color: var(--color-accent); margin-top: 30px; margin-bottom: 15px;">Dam Dilemmas</h4>
+                <p>Dams create complex tradeoffs:</p>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-number">Benefits</div>
+                        <div class="stat-label">Hydropower, water storage, flood control, irrigation</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">Costs</div>
+                        <div class="stat-label">Ecosystem disruption, displacement, methane emissions, failure risk</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="section">
+            <h2>IMPACT ON YOU & YOUR COMMUNITY</h2>
+            <div class="card">
+                <p style="margin-bottom: 30px;">
+                    Flooding doesn't just damage property—it destroys lives, fractures communities, and creates cascading economic and health crises. Here's how rising flood risks impact real people:
+                </p>
+
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <div class="impact-icon">🏘️</div>
+                        <h3>Homes & Property</h3>
+                        <p>Floodwaters destroy homes in hours. Water-damaged buildings develop mold, become uninhabitable, and lose most of their value. Families lose everything—possessions, memories, financial security—in a single night.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">💰</div>
+                        <h3>Economic Devastation</h3>
+                        <p>Floods cost over $40 billion annually in the US alone. Businesses close, jobs disappear, infrastructure crumbles. Recovery takes years, and many communities never fully rebuild. Property values in flood zones plummet.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">💧</div>
+                        <h3>Water Contamination</h3>
+                        <p>Floodwaters mix with sewage, chemicals, and toxic waste, creating dangerous health hazards. Drinking water sources become contaminated. Waterborne diseases spread rapidly through affected populations.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">⚡</div>
+                        <h3>Infrastructure Collapse</h3>
+                        <p>Roads wash out, bridges fail, power grids go dark. Critical facilities—hospitals, fire stations, schools—become inaccessible. Communities are cut off for days or weeks, with emergency services unable to respond.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">🌾</div>
+                        <h3>Agricultural Loss</h3>
+                        <p>Crops are destroyed, soil eroded, livestock drowned. Farmers lose entire seasons of work. Food prices spike. Rural communities dependent on agriculture face economic collapse and food insecurity.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-icon">🧠</div>
+                        <h3>Mental Health Crisis</h3>
+                        <p>The trauma of flooding lingers for years. Anxiety, depression, PTSD affect survivors long after waters recede. Children are especially vulnerable. Community bonds fray under the stress of displacement and loss.</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="stat-number">100M</div>
+                        <div class="stat-label">People affected by floods annually worldwide</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">$150B+</div>
+                        <div class="stat-label">Annual global economic losses from flooding</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>COMMUNITY STORIES</h2>
+            <div class="card">
+                <p style="margin-bottom: 30px;">Behind flood statistics are people whose lives were upended by rising water. These stories reveal the human cost of our changing climate and infrastructure choices.</p>
+
+                <div class="community-story">
+                    <div class="story-header">
+                        <div class="story-avatar">MC</div>
+                        <div>
+                            <h3 style="color: var(--color-primary); margin-bottom: 5px;">Maria's Story: When the River Came</h3>
+                            <p style="color: #aaa;">Small Business Owner, Coastal City</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"We'd lived here 30 years, never had serious flooding. Then three years ago, the rain didn't stop for four days. The river rose eight feet in six hours. We evacuated with minutes to spare. Our bakery—three generations of work—was under six feet of water. Everything destroyed: ovens, inventory, photos on the wall. Insurance paid a fraction. We rebuilt, but now every heavy rain brings panic. My kids check river levels obsessively. We can't sell the property—who'd buy in a flood zone? We're trapped."</p>
+                    <p class="story-source">- Maria Chen, Business Owner</p>
+                </div>
+
+                <div class="community-story">
+                    <div class="story-header">
+                        <div class="story-avatar">AK</div>
+                        <div>
+                            <h3 style="color: var(--color-primary); margin-bottom: 5px;">Amir's Story: The Dam That Changed Everything</h3>
+                            <p style="color: #aaa;">Former Farmer, Reservoir Region</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"My village existed for 400 years in that valley. Farms, orchards, a mosque from the 1600s, graveyards where my ancestors were buried. Then the government built the dam. They gave us two months to leave. Compensation barely covered moving costs. Now it's all underwater—a reservoir for a city 200 miles away. They relocated us to land that doesn't know how to grow our crops. The water here is different, the soil is wrong. My children work in factories now instead of farming. We gained electricity for millions, but we lost everything that made us who we were."</p>
+                    <p class="story-source">- Amir Khan, Displaced Farmer</p>
+                </div>
+
+                <div class="community-story">
+                    <div class="story-header">
+                        <div class="story-avatar">JS</div>
+                        <div>
+                            <h3 style="color: var(--color-primary); margin-bottom: 5px;">Jennifer's Story: Flash Flood Survivor</h3>
+                            <p style="color: #aaa;">Teacher, Suburban Community</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"It was a normal Tuesday. Weather said scattered showers. By noon, six inches had fallen. Storm drains couldn't keep up. Water rushed down our street like a river. My car floated away from the driveway. We climbed to the second floor and watched the water rise—two feet, three feet, four feet. Rescue boats came that evening. The house was condemned—toxic mold everywhere. We lived in a hotel for eight months. My daughter still won't go in basements. The meteorologists said it was a 1-in-500-year flood. Two years later, it happened again. Those odds don't mean what they used to."</p>
+                    <p class="story-source">- Jennifer Santos, Flood Survivor</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="solutions" class="section">
+            <h2>SOLUTIONS & PATHS FORWARD</h2>
+            <div class="card">
+                <p style="margin-bottom: 20px;">Flood risk is growing, but we're not helpless. A combination of smart infrastructure, natural solutions, better planning, and climate action can protect communities. Every level—individual, community, national, global—has a role to play.</p>
+
+                <h3 style="color: var(--color-primary); margin-bottom: 20px;">Infrastructure Solutions</h3>
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <h3>Green Infrastructure</h3>
+                        <p>Nature-based solutions work with water instead of against it: restore wetlands that absorb floods, create permeable surfaces that allow water infiltration, plant urban forests that slow runoff, and build bioswales that filter and channel water naturally.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Smart Urban Design</h3>
+                        <p>Stop building in floodplains. Design cities with water in mind: elevated buildings, flood-resistant materials, redundant drainage systems, and floodable parks that double as retention basins during heavy rain.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Early Warning Systems</h3>
+                        <p>Advanced monitoring and predictive modeling save lives. Real-time river gauges, weather radar networks, and AI-powered flood forecasting give communities hours or days of warning to evacuate safely.</p>
+                    </div>
+
+                    <div class="impact-card">
+                        <h3>Dam Safety & Alternatives</h3>
+                        <p>Retrofit aging dams with modern safety features, remove obsolete dams to restore river health, and consider alternative water storage methods like distributed cistern systems and aquifer recharge projects.</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--color-primary); margin-top: 40px; margin-bottom: 20px;">What You Can Do</h3>
+                
+                <div style="margin-top: 30px;">
+                    <h4 style="color: var(--color-accent); margin-bottom: 15px;">Personal Preparedness</h4>
+                    <ul style="color: #ccc; margin-left: 20px; line-height: 2;">
+                        <li>Know your flood risk—check FEMA flood maps or local resources</li>
+                        <li>Get flood insurance (standard homeowners insurance doesn't cover floods)</li>
+                        <li>Create an emergency kit with water, food, medications, and important documents</li>
+                        <li>Install check valves to prevent sewer backup into your home</li>
+                        <li>Never drive through flooded roads—six inches of water can sweep away a car</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h4 style="color: var(--color-accent); margin-bottom: 15px;">Home & Property Actions</h4>
+                    <ul style="color: #ccc; margin-left: 20px; line-height: 2;">
+                        <li>Elevate critical utilities (furnace, water heater, electrical panels) above flood level</li>
+                        <li>Create permeable surfaces in your yard—reduce concrete, increase vegetation</li>
+                        <li>Install rain barrels and rain gardens to capture and absorb stormwater</li>
+                        <li>Seal basement walls and install a sump pump with battery backup</li>
+                        <li>Keep drainage systems clear—clean gutters, remove debris from storm drains</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h4 style="color: var(--color-accent); margin-bottom: 15px;">Community Actions</h4>
+                    <ul style="color: #ccc; margin-left: 20px; line-height: 2;">
+                        <li>Advocate for wetland protection and restoration in your region</li>
+                        <li>Push for stricter floodplain development restrictions</li>
+                        <li>Support green infrastructure projects over traditional concrete solutions</li>
+                        <li>Join community flood preparedness programs and neighborhood watch groups</li>
+                        <li>Demand updated flood maps that reflect current climate risks</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h4 style="color: var(--color-accent); margin-bottom: 15px;">Climate Action</h4>
+                    <ul style="color: #ccc; margin-left: 20px; line-height: 2;">
+                        <li>Support aggressive emissions reductions to limit future warming</li>
+                        <li>Vote for leaders who prioritize climate adaptation and resilience</li>
+                        <li>Demand funding for flood protection in vulnerable communities</li>
+                        <li>Oppose policies that encourage development in high-risk areas</li>
+                        <li>Support international aid for flood-affected regions globally</li>
+                    </ul>
+                </div>
+
+                <div class="key-insight" style="background: linear-gradient(90deg, #0ea5e9, #ef4444); margin-top: 40px;">
+                    Every flood prevented, every community protected, every life saved matters. We can't stop all flooding, but we can stop making it worse—and start making it better.
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3D VISUALIZATION: RISING WATER SIMULATION</h2>
+            <div class="card">
+                <h3 style="text-align: center; color: var(--color-primary); font-family: var(--font-heading); margin-bottom: 20px; font-size: 1.8rem;">
+                    Interactive Model: Watch Water Rise
+                </h3>
+                <div class="canvas-container" id="scene-container"></div>
+                <p style="text-align: center; font-size: 0.95rem; color: #888; margin-top: 15px;">
+                    Interactive 3D scene showing a landscape being progressively flooded. Watch as water levels rise from normal conditions to devastating flood stage, demonstrating how quickly communities can be overwhelmed.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>THE URGENCY OF ACTION</h2>
+            <div class="card">
+                <p style="font-size: 1.2rem; margin-bottom: 30px; text-align: center; color: var(--color-accent);">
+                    Water doesn't negotiate. It finds the path of least resistance—and increasingly, that path runs through our communities.
+                </p>
+
+                <p style="margin-bottom: 20px;">
+                    The science is clear and the evidence overwhelming: flood risk is accelerating. What used to be "100-year floods" now happen every few years. What used to be manageable rainfall now overwhelms our infrastructure. Climate change isn't a distant threat—it's reshaping our relationship with water right now.
+                </p>
+
+                <p style="margin-bottom: 20px;">
+                    Every year of delay means more lives lost, more homes destroyed, more communities displaced. But unlike some climate impacts that take decades to unfold, flood protection delivers immediate benefits. Restored wetlands prevent flooding today. Better drainage systems protect neighborhoods tomorrow. Early warning systems save lives next week.
+                </p>
+
+                <p style="margin-bottom: 20px;">
+                    The choices we make about dams, development, and drainage will determine whether future floods are manageable challenges or catastrophic disasters. We can choose to work with water—respecting its power, restoring natural systems, and building resilient communities. Or we can keep paving over floodplains, draining wetlands, and hoping the next storm won't be the one that breaks through our defenses.
+                </p>
+
+                <p style="margin-bottom: 20px;">
+                    The water is rising. The storms are intensifying. The question isn't whether we'll face more floods—we will. The question is whether we'll be ready. Whether we'll protect the vulnerable. Whether we'll learn from past disasters or keep repeating the same mistakes.
+                </p>
+
+                <div style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(239, 68, 68, 0.2)); padding: 30px; border-radius: 15px; margin-top: 40px; border: 2px solid rgba(14, 165, 233, 0.3);">
+                    <h3 style="color: var(--color-primary); margin-bottom: 15px; text-align: center;">When the Tide Changes</h3>
+                    <p style="text-align: center; font-size: 1.1rem;">
+                        Water shaped civilization—we built our cities on rivers, coasts, and floodplains. Now those same waters threaten what we've built. But we have the knowledge, technology, and resources to adapt. We just need the will to act before the next flood comes.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center" style="padding: 60px 0; font-size: 0.95rem; color: #666;">
+            <p style="margin-bottom: 10px;">&copy; 2025 Tides of Change Initiative. Data from NOAA, USGS, and global flood monitoring networks.</p>
+            <p>The waters are rising. Will you be ready?</p>
+        </footer>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Water droplet animation background
+        const waterCanvas = document.getElementById('waterfield');
+        const waterCtx = waterCanvas.getContext('2d');
+
+        waterCanvas.width = window.innerWidth;
+        waterCanvas.height = window.innerHeight;
+
+        const drops = [];
+        const dropCount = 150;
+
+        for (let i = 0; i < dropCount; i++) {
+            drops.push({
+                x: Math.random() * waterCanvas.width,
+                y: Math.random() * waterCanvas.height,
+                length: Math.random() * 20 + 10,
+                speed: Math.random() * 3 + 2,
+                opacity: Math.random() * 0.5 + 0.3
+            });
+        }
+
+        function animateDrops() {
+            waterCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            waterCtx.fillRect(0, 0, waterCanvas.width, waterCanvas.height);
+
+            drops.forEach(drop => {
+                drop.y += drop.speed;
+
+                if (drop.y > waterCanvas.height) {
+                    drop.y = -drop.length;
+                    drop.x = Math.random() * waterCanvas.width;
+                }
+
+                waterCtx.beginPath();
+                waterCtx.moveTo(drop.x, drop.y);
+                waterCtx.lineTo(drop.x, drop.y + drop.length);
+                waterCtx.strokeStyle = `rgba(14, 165, 233, ${drop.opacity})`;
+                waterCtx.lineWidth = 2;
+                waterCtx.stroke();
+            });
+
+            requestAnimationFrame(animateDrops);
+        }
+
+        animateDrops();
+
+        window.addEventListener('resize', () => {
+            waterCanvas.width = window.innerWidth;
+            waterCanvas.height = window.innerHeight;
+        });
+
+        // Three.js 3D Scene - Flood Simulation
+        const container = document.getElementById('scene-container');
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x001a33);
+        scene.fog = new THREE.Fog(0x001a33, 20, 60);
+
+        const camera = new THREE.PerspectiveCamera(
+            50,
+            container.clientWidth / container.clientHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(15, 12, 15);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        sunLight.position.set(10, 15, 5);
+        scene.add(sunLight);
+
+        // Create ground/terrain
+        const groundGeo = new THREE.BoxGeometry(20, 0.5, 20);
+        const groundMat = new THREE.MeshStandardMaterial({
+            color: 0x2d5016,
+            roughness: 0.8
+        });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.position.y = -0.25;
+        scene.add(ground);
+
+        // Create buildings
+        const buildings = [];
+        const buildingPositions = [
+            [-6, 0, -6], [-6, 0, 6], [6, 0, -6], [6, 0, 6],
+            [0, 0, -7], [0, 0, 7], [-7, 0, 0], [7, 0, 0]
+        ];
+
+        buildingPositions.forEach(pos => {
+            const height = Math.random() * 3 + 2;
+            const buildingGeo = new THREE.BoxGeometry(2, height, 2);
+            const buildingMat = new THREE.MeshStandardMaterial({
+                color: 0x4a5568,
+                roughness: 0.6
+            });
+            const building = new THREE.Mesh(buildingGeo, buildingMat);
+            building.position.set(pos[0], height / 2, pos[2]);
+            scene.add(building);
+            buildings.push(building);
+        });
+
+        // Create water plane
+        const waterGeo = new THREE.PlaneGeometry(25, 25, 32, 32);
+        const waterMat = new THREE.MeshStandardMaterial({
+            color: 0x0ea5e9,
+            transparent: true,
+            opacity: 0.7,
+            roughness: 0.1,
+            metalness: 0.3
+        });
+        const water = new THREE.Mesh(waterGeo, waterMat);
+        water.rotation.x = -Math.PI / 2;
+        water.position.y = -5;
+        scene.add(water);
+
+        // Animate water vertices for wave effect
+        const vertices = water.geometry.attributes.position;
+        const originalPositions = [];
+        for (let i = 0; i < vertices.count; i++) {
+            originalPositions.push(vertices.getZ(i));
+        }
+
+        let time = 0;
+        let waterLevel = -5;
+        let rising = true;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.02;
+
+            // Animate water level
+            if (rising) {
+                waterLevel += 0.015;
+                if (waterLevel > 6) rising = false;
+            } else {
+                waterLevel -= 0.015;
+                if (waterLevel < -5) rising = true;
+            }
+
+            water.position.y = waterLevel;
+
+            // Create wave effect
+            for (let i = 0; i < vertices.count; i++) {
+                const x = vertices.getX(i);
+                const y = vertices.getY(i);
+                const wave = Math.sin(x * 0.5 + time) * 0.3 + Math.cos(y * 0.5 + time * 0.8) * 0.3;
+                vertices.setZ(i, originalPositions[i] + wave);
+            }
+            vertices.needsUpdate = true;
+
+            // Camera rotation
+            camera.position.x = 20 * Math.sin(time * 0.1);
+            camera.position.z = 20 * Math.cos(time * 0.1);
+            camera.lookAt(0, 2, 0);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            if (container.clientWidth && container.clientHeight) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        });
+    </script>
+</body>
+
+</html>
