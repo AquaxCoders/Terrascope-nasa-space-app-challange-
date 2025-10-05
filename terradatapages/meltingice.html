@@ -875,7 +875,6 @@
             starCanvas.height = window.innerHeight;
         });
 
-        // Three.js 3D Scene
         const container = document.getElementById('scene-container');
 
         const scene = new THREE.Scene();
@@ -902,7 +901,6 @@
         sunLight.position.set(10, 10, 10);
         scene.add(sunLight);
 
-        // Create Earth sphere
         const earthGeo = new THREE.SphereGeometry(6, 32, 32);
         const earthMat = new THREE.MeshStandardMaterial({
             color: 0x1e3a5f,
@@ -912,7 +910,6 @@
         const earth = new THREE.Mesh(earthGeo, earthMat);
         scene.add(earth);
 
-        // Ice cap layers - starting white, gradually melting
         const iceLayers = [];
         const layerCount = 8;
         
@@ -936,7 +933,6 @@
             iceLayers.push(iceLayer);
         }
 
-        // Dark ocean showing through
         const oceanGeo = new THREE.SphereGeometry(6.2, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.45);
         const oceanMat = new THREE.MeshStandardMaterial({
             color: 0x1a2942,
@@ -946,7 +942,6 @@
         const ocean = new THREE.Mesh(oceanGeo, oceanMat);
         scene.add(ocean);
 
-        // Melting particles
         const meltParticles = [];
         for (let i = 0; i < 50; i++) {
             const particleGeo = new THREE.SphereGeometry(0.05, 6, 6);
@@ -990,7 +985,6 @@
             earth.rotation.y += 0.001;
             ocean.rotation.y += 0.001;
 
-            // Animate ice melting
             iceLayers.forEach((layer, index) => {
                 layer.rotation.y += 0.0008;
                 
@@ -998,7 +992,6 @@
                 const newRadius = layer.userData.initialRadius - Math.max(0, meltAmount);
                 layer.scale.set(newRadius / layer.userData.initialRadius, newRadius / layer.userData.initialRadius, newRadius / layer.userData.initialRadius);
                 
-                // Fade and darken as it melts
                 const meltRatio = Math.max(0, meltAmount / layer.userData.maxMelt);
                 layer.material.opacity = (0.9 - (index * 0.1)) * (1 - meltRatio * 0.7);
                 
@@ -1006,7 +999,6 @@
                 layer.material.color.setRGB(colorValue, colorValue, colorValue);
             });
 
-            // Animate melt particles
             meltParticles.forEach(particle => {
                 particle.position.add(particle.userData.velocity);
                 particle.userData.life--;
@@ -1026,7 +1018,6 @@
                 particle.material.opacity = lifePercent * 0.7;
             });
 
-            // Camera rotation
             camera.position.x = 25 * Math.sin(time * 0.1);
             camera.position.z = 25 * Math.cos(time * 0.1);
             camera.lookAt(0, 0, 0);

@@ -836,7 +836,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Water droplet animation background
         const waterCanvas = document.getElementById('waterfield');
         const waterCtx = waterCanvas.getContext('2d');
 
@@ -886,7 +885,6 @@
             waterCanvas.height = window.innerHeight;
         });
 
-        // Three.js 3D Scene - Flood Simulation
         const container = document.getElementById('scene-container');
 
         const scene = new THREE.Scene();
@@ -913,7 +911,6 @@
         sunLight.position.set(10, 15, 5);
         scene.add(sunLight);
 
-        // Create ground/terrain
         const groundGeo = new THREE.BoxGeometry(20, 0.5, 20);
         const groundMat = new THREE.MeshStandardMaterial({
             color: 0x2d5016,
@@ -923,7 +920,6 @@
         ground.position.y = -0.25;
         scene.add(ground);
 
-        // Create buildings
         const buildings = [];
         const buildingPositions = [
             [-6, 0, -6], [-6, 0, 6], [6, 0, -6], [6, 0, 6],
@@ -943,7 +939,6 @@
             buildings.push(building);
         });
 
-        // Create water plane
         const waterGeo = new THREE.PlaneGeometry(25, 25, 32, 32);
         const waterMat = new THREE.MeshStandardMaterial({
             color: 0x0ea5e9,
@@ -957,7 +952,6 @@
         water.position.y = -5;
         scene.add(water);
 
-        // Animate water vertices for wave effect
         const vertices = water.geometry.attributes.position;
         const originalPositions = [];
         for (let i = 0; i < vertices.count; i++) {
@@ -972,7 +966,6 @@
             requestAnimationFrame(animate);
             time += 0.02;
 
-            // Animate water level
             if (rising) {
                 waterLevel += 0.015;
                 if (waterLevel > 6) rising = false;
@@ -983,7 +976,6 @@
 
             water.position.y = waterLevel;
 
-            // Create wave effect
             for (let i = 0; i < vertices.count; i++) {
                 const x = vertices.getX(i);
                 const y = vertices.getY(i);
@@ -992,7 +984,6 @@
             }
             vertices.needsUpdate = true;
 
-            // Camera rotation
             camera.position.x = 20 * Math.sin(time * 0.1);
             camera.position.z = 20 * Math.cos(time * 0.1);
             camera.lookAt(0, 2, 0);

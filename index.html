@@ -120,6 +120,7 @@
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
+            margin: 5px;
         }
 
         .cta-button:hover {
@@ -312,9 +313,9 @@
             <a onclick="scrollToSection('about')">CHALLENGE</a>
             <a onclick="scrollToSection('projects')">SOLUTIONS</a>
         </div>
-        <div class="logo">TERRA 25</div>
+        <div class="logo">TERRASCOPE</div>
         <div class="nav-links">
-            <a href="https://terra.nasa.gov/" target="_blank">NASA TERRA</a>
+            <a href="https://terra.nasa.gov/" target="_blank">TERRA 25</a>
         </div>
     </nav>
 
@@ -328,7 +329,7 @@
                 Explore 25 years of Earth observation through stunning visualizations of our changing planet
             </p>
             <a href="#about" class="cta-button" onclick="scrollToSection('about')">Discover The Challenge</a>
-              <a href="home.html" class="cta-button" onclick="scrollToSection('about')">Explore the Galaxy</a>
+            <a href="home.html" class="cta-button">Explore the Galaxy</a>
         </div>
 
         <div class="scroll-indicator"></div>
@@ -374,57 +375,129 @@
             <div class="project-card">
                 <div class="project-icon">🔥</div>
                 <h3 class="project-title">Blazing Earth</h3>
-                <p class="project-theme">25 Years of Fire and Recovery</p>
+                <p class="project-theme">Global Emissions & Industrial Impact</p>
                 <p class="project-description">
-                    Tracking how wildfires and vegetation recovery have changed over 25 years using data from NASA's Terra satellite — revealing how our planet burns, heals, and evolves.
+                    An interactive data story visualizing how human industries and urbanization have contributed to rising global emissions and temperature changes over the past 25 years.
                 </p>
-                <p class="project-description">
-                    Our animation tells the story of Earth's changing fire patterns and post-fire vegetation recovery across time, using data from multiple Terra instruments. By combining wildfire data, carbon monoxide emissions, and vegetation indices, we visualize how global warming, human activity, and natural cycles interact — and how our planet is responding.
-                </p>
-                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Regions:</p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Key Insights:</p>
                 <ul class="focus-list">
-                    <li>Amazon Rainforest (South America)</li>
-                    <li>Australian Bushfires</li>
-                    <li>California (USA)</li>
-                    <li>Kerala & Western Ghats (India)</li>
+                    <li>Urban & industrial expansion visualized through animated cityscapes</li>
+                    <li>Vehicle emissions shown via moving 3D vehicles with smoke particles</li>
+                    <li>Air pollution (CO₂ & aerosols) displayed in interactive charts</li>
+                    <li>Temperature rise patterns since 2000 using MODIS LST data</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🌋</div>
+                <h3 class="project-title">Wildfire Watch</h3>
+                <p class="project-theme">The Rising Inferno</p>
+                <p class="project-description">
+                    A compelling interactive data story illustrating how climate change and human actions have intensified global wildfires over recent years (2020–2025).
+                </p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Key Insights:</p>
+                <ul class="focus-list">
+                    <li>Increasing frequency and scale of wildfires globally</li>
+                    <li>Link between temperature rise and fire susceptibility</li>
+                    <li>Ozone depletion and increased UV exposure drying vegetation</li>
+                    <li>Health and environmental impacts of prolonged fire seasons</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🌫️</div>
+                <h3 class="project-title">Breathe Earth</h3>
+                <p class="project-theme">Air & Pollution Trends (2019–2025)</p>
+                <p class="project-description">
+                    Visualizing the rise and spread of air pollution over the last decade using real NASA satellite data, focusing on how human activity has altered the atmosphere.
+                </p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Key Insights:</p>
+                <ul class="focus-list">
+                    <li>Visual comparison of 2019–2025 global NO₂ and CH₄ levels</li>
+                    <li>Historical timeline showing gradual pollution rise (2005–2022)</li>
+                    <li>2020 lockdown visual showing temporary air recovery</li>
+                    <li>3D simulation of vehicles and factories emitting pollutants</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🏙️</div>
+                <h3 class="project-title">Human Footprint</h3>
+                <p class="project-theme">Urban Growth & Land Change (2001–2025)</p>
+                <p class="project-description">
+                    Visualizing how human activity — particularly population growth, urban expansion, and energy infrastructure — has reshaped the planet over the last 25 years.
+                </p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Key Insights:</p>
+                <ul class="focus-list">
+                    <li>Population hotspots and rapid growth in Asia, Africa, Latin America</li>
+                    <li>Urban merging creating megaregions</li>
+                    <li>Energy nodes concentration along coasts and river systems</li>
+                    <li>Water pressure and environmental impact of urban sprawl</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🏔️</div>
+                <h3 class="project-title">Melting White</h3>
+                <p class="project-theme">Glacial Retreat — The Vanishing Cryosphere</p>
+                <p class="project-description">
+                    An interactive visual storytelling project revealing how Earth's frozen regions have been rapidly melting due to global warming, with impacts on ecosystems and humanity.
+                </p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Key Insights:</p>
+                <ul class="focus-list">
+                    <li>Drastic loss of ice across Arctic, Himalayas, and Greenland</li>
+                    <li>Temperature correlation with reduced snow cover</li>
+                    <li>Albedo effect accelerating warming</li>
+                    <li>Sea level rise and water insecurity impacts</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🌡️</div>
+                <h3 class="project-title">Warming World</h3>
+                <p class="project-theme">Global Temperature Trends (2012–2025)</p>
+                <p class="project-description">
+                    An interactive data storytelling experience visualizing the steady increase in Land Surface Temperature across the globe between 2012 and 2025.
+                </p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Key Insights:</p>
+                <ul class="focus-list">
+                    <li>+1.7°C rise in global land surface temperature since 2012</li>
+                    <li>Urban heat islands showing significantly higher LST values</li>
+                    <li>Solar radiation increase contributing to surface warming</li>
+                    <li>Feedback loops creating drier soils and less vegetation</li>
                 </ul>
             </div>
 
             <div class="project-card">
                 <div class="project-icon">🌊</div>
-                <h3 class="project-title">Rising Blue</h3>
-                <p class="project-theme">25 Years of Coastal Change</p>
+                <h3 class="project-title">Tides of Change</h3>
+                <p class="project-theme">Flood Hazards & Dam Impact — When Water Rises</p>
                 <p class="project-description">
-                    Visualizing coastal transformation and rising sea levels using 25 years of NASA Terra satellite data — showing how shorelines, wetlands, and coastal cities are being reshaped by climate change.
+                    An interactive visual storytelling project exploring how floods and dam constructions are reshaping landscapes, ecosystems, and communities worldwide.
                 </p>
-                <p class="project-description">
-                    Over the last 25 years, rising sea levels, urbanization, and erosion have changed coastlines worldwide. Using Terra's powerful instruments, we will create an animated visualization that shows how our coasts are shrinking, shifting, and adapting.
-                </p>
-                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Regions:</p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Key Insights:</p>
                 <ul class="focus-list">
-                    <li>Kerala Coast (India) — local impact</li>
-                    <li>Maldives — global hotspot for sea-level rise</li>
-                    <li>Jakarta (Indonesia) — fastest-sinking city</li>
-                    <li>Florida (USA) — coastal flooding patterns</li>
+                    <li>Flood-prone areas expanded 3× since 2000</li>
+                    <li>Climate link to more intense rainfall events</li>
+                    <li>Dam impact on river systems and communities</li>
+                    <li>Over 1.8 billion people in high flood risk areas</li>
                 </ul>
             </div>
 
+            <!-- Project 8: Shifting Earth -->
             <div class="project-card">
-                <div class="project-icon">🌆</div>
-                <h3 class="project-title">Breathe</h3>
-                <p class="project-theme">25 Years of Urban Growth and Air Pollution</p>
+                <div class="project-icon">🌋</div>
+                <h3 class="project-title">Shifting Earth</h3>
+                <p class="project-theme">Volcanoes Triggered by Quakes</p>
                 <p class="project-description">
-                    Exploring how urban expansion over the last 25 years has transformed air quality and the environment using Terra satellite data — revealing how cities grow, breathe, and struggle to stay healthy.
+                    Visualizing the connection between earthquakes and volcanic eruptions, demonstrating how tectonic activity can trigger cascading natural disasters.
                 </p>
-                <p class="project-description">
-                    Cities are growing faster than ever — but so is pollution. Using data from NASA's Terra satellite, this project visualizes the link between urbanization and air quality from 2000 to 2025. Through 25 years of Terra data, we'll show how cities evolve — from expanding skylines to thickening smog layers — and how human choices shape the atmosphere we all share.
-                </p>
-                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Focus Cities:</p>
+                <p style="font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #4A90E2;">Key Insights:</p>
                 <ul class="focus-list">
-                    <li>Delhi (India) — rapid growth, extreme smog</li>
-                    <li>Beijing (China) — industrial expansion and recovery</li>
-                    <li>Los Angeles (USA) — pollution control success</li>
-                    <li>Cairo (Egypt) — urban sprawl and desert dust</li>
+                    <li>Eruptions most likely within 250 km of earthquake epicenters</li>
+                    <li>Temporal patterns: eruptions often occur days to years after seismic events</li>
+                    <li>Focus on Pacific Ring of Fire with 75% of volcanoes and 90% of earthquakes</li>
+                    <li>500+ million people living near active volcanoes</li>
                 </ul>
             </div>
         </div>
